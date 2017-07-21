@@ -1,0 +1,36 @@
+{
+	"type": "project",
+	"license": "MIT",
+	"config": {
+		"preferred-install": "dist",
+		"optimize-autoloader": true,
+		"classmap-authoritative": true,
+		"bin-compat": "full"
+	},
+	"extra": {
+		"cleaner-ignore": {
+			"composer/composer": ["res"]
+		}
+	},
+	"require": {
+		"php": "~7.1.0",
+		"dg/composer-cleaner": "~1.0",
+
+		"latte/latte": "~2.4.0",
+		"nette/application": "~2.4.0",
+		"nette/bootstrap": "~2.4.0",
+		"nette/component-model": "~2.3",
+		"nette/di": "~2.4.0",
+		"nette/forms": "~2.4.0",
+		"nette/http": "~2.4.0",
+		"nette/robot-loader": "~3.0",
+		"nette/utils": "~2.4.0",
+		"tracy/tracy": "~2.4.0",
+
+		"nikic/php-parser": "~3.0",
+		"milo/github-api": "~1.4",
+		"composer/composer": "~1.4",
+		"symfony/process": "~3.3",
+		"sensiolabs/ansi-to-html": "~1.1"
+	}
+}
