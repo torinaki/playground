@@ -1,0 +1,116 @@
+{block content}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/codemirror.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/theme/solarized.min.css">
+
+	<style>
+		body,
+		html {
+			background: #262626;
+			color: #e4e4e4;
+			font-family: sans-serif;
+		}
+
+		.CodeMirror {
+			border: 1px solid #eee;
+			height: 100%;
+			min-height: 300px;
+			max-height: 600px;
+		}
+
+		input,
+		select,
+		textarea {
+			margin: 10px;
+			padding: 2px;
+		}
+
+		label {
+			font-size: 110%;
+		}
+
+		.input-level {
+			width: 50px;
+		}
+
+		.top {
+			border-bottom: 1px solid #e4e4e4;
+			margin-bottom: 20px;
+		}
+
+		.middle {
+			display: flex;
+		}
+
+		.middle > div {
+			width: 50%;
+			margin: 10px;
+		}
+
+		.btn-analyze {
+			font-size: 120%;
+			padding: 7px 20px;
+		}
+
+		.ansi-box {
+			overflow: auto;
+			padding: 10px 15px;
+			font-family: Consolas, monospace;
+		}
+	</style>
+
+	{form form}
+		<div class="top">
+			{label level}Level {input level, class => input-level}{/label}
+			{label level}Version {input version, class => input-version}{/label}
+		</div>
+
+		<div class="middle">
+			<div class="middle-left">{input phpCode}</div>
+			<div class="middle-left">{input config}</div>
+		</div>
+
+		{input send, value => Analyze, class => btn-analyze}
+	{/form}
+
+	{ifset $htmlOutput}
+		<pre class="ansi-box">{$htmlOutput}</pre>
+	{/ifset}
+
+{/block}
+
+
+{block scripts}
+	{include #parent}
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/codemirror.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/addon/edit/matchbrackets.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/mode/xml/xml.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/mode/clike/clike.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/mode/php/php.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/mode/yaml/yaml.min.js"></script>
+
+	<script>
+		CodeMirror.fromTextArea(document.getElementById('frm-form-phpCode'), {
+			mode: 'application/x-httpd-php',
+			lineSeparator: "\n",
+			indentWithTabs: true,
+			indentUnit: 4,
+			lineNumbers: true,
+			matchBrackets: true,
+			theme: 'solarized',
+			inputStyle: 'contenteditable',
+			viewportMargin: Infinity
+		});
+
+		CodeMirror.fromTextArea(document.getElementById('frm-form-config'), {
+			mode: 'text/x-yaml',
+			lineSeparator: "\n",
+			indentWithTabs: true,
+			indentUnit: 4,
+			lineNumbers: true,
+			matchBrackets: true,
+			theme: 'solarized',
+			inputStyle: 'contenteditable',
+			viewportMargin: Infinity
+		});
+	</script>
+{/block}

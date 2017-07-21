@@ -1,0 +1,48 @@
+parameters:
+	phpBin: php
+	phpStanDir: %appDir%/../phpstan
+	dataDir: %appDir%/../data
+	userWhitelist: [JanTvrdik, ondrejmirtes, phpstan]
+
+
+application:
+	errorPresenter: Error
+	mapping:
+		*: App\*Module\Presenters\*Presenter
+
+
+services:
+	# app
+	- App\Model\PhpStanInstaller(
+		tempDir: %tempDir%/downloads
+		targetDir: %phpStanDir%
+	)
+	- App\Model\PhpStanVersions(
+		dataDir: %dataDir%
+		userWhitelist: %userWhitelist%
+	)
+	- App\Model\PhpStanAnalyzer(
+		phpBin: %phpBin%
+		phpStanDir: %phpStanDir%
+		dataDir: %dataDir%
+	)
+	- App\Model\CodeSanitizer
+	- App\Model\CodeValidator
+
+
+	# nette/*
+	@Nette\Application\IRouter: App\RouterFactory::createRouter()
+
+
+	# milo/github-api
+	- Milo\Github\Api
+
+
+	# nikic/php-parser
+	- PhpParser\Lexer
+	- PhpParser\Parser\Php7
+	- PhpParser\PrettyPrinter\Standard
+
+	# sensiolabs/ansi-to-html
+	- SensioLabs\AnsiConverter\Theme\SolarizedXTermTheme
+	- SensioLabs\AnsiConverter\AnsiToHtmlConverter
