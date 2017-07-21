@@ -105,7 +105,13 @@ class HelloWorld
 
 		$form->addTextArea('config')
 			->setRequired(FALSE)
-			->setDefaultValue("parameters:\n\t");
+			->setDefaultValue('parameters:
+	polluteCatchScopeWithTryAssignments: false
+	polluteScopeWithLoopInitialAssignments: false
+	earlyTerminatingMethodCalls: []
+	universalObjectCratesClasses: []
+	ignoreErrors: []
+');
 
 		$form->addInteger('level')
 			->setRequired()
