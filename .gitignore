@@ -1,0 +1,5 @@
+/app/config/config.local.neon
+/data
+/log
+/phpstan
+/temp
