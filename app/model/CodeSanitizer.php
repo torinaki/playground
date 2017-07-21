@@ -51,6 +51,16 @@ class CodeSanitizer
 				if ($node->stmts) {
 					$node->stmts = $this->filterNodes($node->stmts);
 				}
+
+			} elseif ($node instanceof Node\Stmt\ClassLike) {
+				foreach ($node->stmts as $stmt) {
+					if ($stmt instanceof Node\Stmt\ClassMethod) {
+						$stmt->stmts = [];
+					}
+				}
+
+			} elseif ($node instanceof Node\Stmt\Function_) {
+				$node->stmts = [];
 			}
 		}
 
