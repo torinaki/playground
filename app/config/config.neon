@@ -4,6 +4,23 @@ parameters:
 	dataDir: %appDir%/../data
 	userWhitelist: [JanTvrdik, ondrejmirtes, phpstan]
 
+	configWhitelist:
+		topLevelKeys:
+			- parameters
+
+		parameterKeys:
+			- checkArgumentsPassedByReference
+			- checkFunctionArgumentTypes
+			- checkNullables
+			- checkThisOnly
+			- checkUnionTypes
+			- earlyTerminatingMethodCalls
+			- ignoreErrors
+			- polluteCatchScopeWithTryAssignments
+			- polluteScopeWithLoopInitialAssignments
+			- reportUnmatchedIgnoredErrors
+			- universalObjectCratesClasses
+
 
 application:
 	errorPresenter: Error
@@ -28,6 +45,10 @@ services:
 	)
 	- App\Model\CodeSanitizer
 	- App\Model\CodeValidator
+	- App\Model\ConfigValidator(
+		topLevelKeysWhitelist: %configWhitelist.topLevelKeys%
+		parameterKeysWhitelist: %configWhitelist.parameterKeys%
+	)
 
 
 	# nette/*

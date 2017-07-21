@@ -5,12 +5,12 @@ namespace App\Presenters;
 use App\Model\AnalyzerInput;
 use App\Model\AnalyzerOutput;
 use App\Model\CodeValidator;
+use App\Model\ConfigValidator;
 use App\Model\GitShaHex;
 use App\Model\PhpStanAnalyzer;
 use App\Model\PhpStanVersions;
 use Latte\Runtime\Html;
 use Nette\Application\UI;
-use Nette\Neon\Neon;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
 
@@ -18,6 +18,9 @@ class HomepagePresenter extends UI\Presenter
 {
 	/** @var CodeValidator */
 	private $codeValidator;
+
+	/** @var ConfigValidator */
+	private $configValidator;
 
 	/** @var PhpStanVersions */
 	private $versions;
@@ -32,10 +35,16 @@ class HomepagePresenter extends UI\Presenter
 	private $output;
 
 
-	public function __construct(CodeValidator $codeValidator, PhpStanVersions $versions, PhpStanAnalyzer $analyzer, AnsiToHtmlConverter $ansiToHtmlConverter)
-	{
+	public function __construct(
+		CodeValidator $codeValidator,
+		ConfigValidator $configValidator,
+		PhpStanVersions $versions,
+		PhpStanAnalyzer $analyzer,
+		AnsiToHtmlConverter $ansiToHtmlConverter
+	) {
 		parent::__construct();
 		$this->codeValidator = $codeValidator;
+		$this->configValidator = $configValidator;
 		$this->versions = $versions;
 		$this->analyzer = $analyzer;
 		$this->ansiToHtmlConverter = $ansiToHtmlConverter;
@@ -115,11 +124,8 @@ class HelloWorld
 				$form->addError($phpCodeError);
 			}
 
-			try {
-				Neon::decode($values['config']);
-
-			} catch (\Nette\Neon\Exception $e) {
-				$form->addError(sprintf('Invalid config file: %s', $e->getMessage()));
+			foreach ($this->configValidator->validate($values['config']) as $configError) {
+				$form->addError($configError);
 			}
 		};
 
