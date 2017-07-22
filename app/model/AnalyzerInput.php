@@ -53,6 +53,6 @@ class AnalyzerInput
 
 	public function getHash(): string
 	{
-		return md5("{$this->phpStanVersion};{$this->level};{$this->config};{$this->phpCode}");
+		return md5("{$this->phpStanVersion}\x00{$this->level}\x00{$this->config}\x00{$this->phpCode}");
 	}
 }
