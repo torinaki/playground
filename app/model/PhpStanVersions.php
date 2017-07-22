@@ -20,15 +20,15 @@ class PhpStanVersions
 	private $dataPath;
 
 	/** @var string[] */
-	private $userWhitelist;
+	private $usersWhitelist;
 
 
-	public function __construct(Github\Api $githubApi, PhpStanInstaller $installer, string $dataDir, array $userWhitelist)
+	public function __construct(Github\Api $githubApi, PhpStanInstaller $installer, string $dataDir, array $usersWhitelist)
 	{
 		$this->githubApi = $githubApi;
 		$this->installer = $installer;
 		$this->dataPath = "$dataDir/versions.json";
-		$this->userWhitelist = $userWhitelist;
+		$this->usersWhitelist = $usersWhitelist;
 	}
 
 
@@ -99,7 +99,7 @@ class PhpStanVersions
 
 		foreach ($paginatedResponse as $response) {
 			foreach ($this->githubApi->decode($response) as $pr) {
-				if (in_array($pr->head->user->login, $this->userWhitelist, TRUE)) {
+				if (in_array($pr->head->user->login, $this->usersWhitelist, TRUE)) {
 					$result[$pr->head->sha] = "#{$pr->number} ($pr->title)";
 				}
 			}

@@ -2,7 +2,11 @@ parameters:
 	phpBin: php
 	phpStanDir: %appDir%/../phpstan
 	dataDir: %appDir%/../data
-	userWhitelist: [JanTvrdik, ondrejmirtes, phpstan]
+
+	usersWhitelist:
+		- JanTvrdik
+		- ondrejmirtes
+		- phpstan
 
 	configWhitelist:
 		topLevelKeys:
@@ -36,7 +40,7 @@ services:
 	)
 	- App\Model\PhpStanVersions(
 		dataDir: %dataDir%
-		userWhitelist: %userWhitelist%
+		usersWhitelist: %usersWhitelist%
 	)
 	- App\Model\PhpStanAnalyzer(
 		phpBin: %phpBin%
