@@ -3,7 +3,6 @@
 
 <style>
 	.playground-form .CodeMirror {
-		border: 1px solid #eee;
 		height: 100%;
 		min-height: 300px;
 		max-height: 600px;
@@ -19,7 +18,7 @@
 		display: flex;
 	}
 
-	.playground-form .middle > div {
+	.playground-form .middle > .middle-column {
 		width: 50%;
 		margin: 10px;
 	}
@@ -54,8 +53,8 @@
 		</div>
 
 		<div class="middle">
-			<div class="middle-left"><textarea n:name="phpCode"></textarea></div>
-			<div class="middle-left"><textarea n:name="config"></textarea></div>
+			<div class="middle-column"><textarea n:name="phpCode"></textarea></div>
+			<div class="middle-column"><textarea n:name="config"></textarea></div>
 		</div>
 
 		<input n:name="analyzeAndForget" value="Preview">
@@ -71,7 +70,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.28.0/mode/yaml/yaml.min.js"></script>
 
 <script>
-	CodeMirror.fromTextArea(document.getElementById('frm-playgroundForm-form-phpCode'), {
+	CodeMirror.fromTextArea(document.querySelector('textarea[name=phpCode]'), {
 		mode: 'application/x-httpd-php',
 		lineSeparator: "\n",
 		indentWithTabs: true,
@@ -83,7 +82,7 @@
 		viewportMargin: Infinity
 	});
 
-	CodeMirror.fromTextArea(document.getElementById('frm-playgroundForm-form-config'), {
+	CodeMirror.fromTextArea(document.querySelector('textarea[name=config]'), {
 		mode: 'text/x-yaml',
 		lineSeparator: "\n",
 		indentWithTabs: true,
