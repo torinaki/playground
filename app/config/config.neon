@@ -2,6 +2,7 @@ parameters:
 	phpBin: php
 	phpStanDir: %appDir%/../phpstan
 	dataDir: %appDir%/../data
+	downloadsDir: %tempDir%/downloads
 
 	versions:
 		labelsBlacklist:
@@ -70,26 +71,12 @@ nette.application:
 
 services:
 	# app model
-	- App\Model\PhpStanInstaller(
-		tempDir: %tempDir%/downloads
-		targetDir: %phpStanDir%
-	)
-	- App\Model\PhpStanVersions(
-		dataDir: %dataDir%
-		usersWhitelist: %versions.pullRequestOwnersWhitelist%
-		versionsBlacklist: %versions.labelsBlacklist%
-	)
-	- App\Model\PhpStanAnalyzer(
-		phpBin: %phpBin%
-		phpStanDir: %phpStanDir%
-		dataDir: %dataDir%
-	)
+	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%)
+	- App\Model\PhpStanVersions(dataDir: %dataDir%, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
+	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%, dataDir: %dataDir%)
 	- App\Model\CodeSanitizer
 	- App\Model\CodeValidator
-	- App\Model\ConfigValidator(
-		topLevelKeysWhitelist: %config.topLevelKeysWhitelist%
-		parameterKeysWhitelist: %config.parameterKeysWhitelist%
-	)
+	- App\Model\ConfigValidator(topLevelKeysWhitelist: %config.topLevelKeysWhitelist%, parameterKeysWhitelist: %config.parameterKeysWhitelist%)
 
 
 	# app ui
