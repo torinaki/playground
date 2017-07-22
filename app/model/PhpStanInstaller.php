@@ -52,7 +52,8 @@ class PhpStanInstaller
 
 	private function getTargetPath(GitShaHex $shaHex): string
 	{
-		return "{$this->targetDir}/{$shaHex}";
+		$prefix = substr((string) $shaHex, 0, 2);
+		return "{$this->targetDir}/{$prefix}/{$shaHex}";
 	}
 
 

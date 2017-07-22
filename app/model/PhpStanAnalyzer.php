@@ -134,8 +134,9 @@ class PhpStanAnalyzer
 
 	private function getPhpStanBinDir(AnalyzerInput $input): string
 	{
-		$phpStanVersion = $input->getPhpStanVersion();
-		return realpath("{$this->phpStanDir}/{$phpStanVersion}/bin");
+		$phpStanVersion = (string) $input->getPhpStanVersion();
+		$prefix = substr($phpStanVersion, 0, 2);
+		return realpath("{$this->phpStanDir}/{$prefix}/{$phpStanVersion}/bin");
 	}
 
 
