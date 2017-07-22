@@ -8,6 +8,17 @@ parameters:
 		- ondrejmirtes
 		- phpstan
 
+	versionsBlacklist:
+		- '0.1'
+		- '0.2'
+		- '0.2.1'
+		- '0.2.2'
+		- '0.3'
+		- '0.3.1'
+		- '0.4'
+		- '0.4.1'
+		- '0.4.2'
+
 	configWhitelist:
 		topLevelKeys:
 			- parameters
@@ -41,6 +52,7 @@ services:
 	- App\Model\PhpStanVersions(
 		dataDir: %dataDir%
 		usersWhitelist: %usersWhitelist%
+		versionsBlacklist: %versionsBlacklist%
 	)
 	- App\Model\PhpStanAnalyzer(
 		phpBin: %phpBin%

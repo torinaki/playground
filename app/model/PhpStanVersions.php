@@ -22,13 +22,17 @@ class PhpStanVersions
 	/** @var string[] */
 	private $usersWhitelist;
 
+	/** @var string[] */
+	private $versionsBlacklist;
 
-	public function __construct(Github\Api $githubApi, PhpStanInstaller $installer, string $dataDir, array $usersWhitelist)
+
+	public function __construct(Github\Api $githubApi, PhpStanInstaller $installer, string $dataDir, array $usersWhitelist, array $versionsBlacklist)
 	{
 		$this->githubApi = $githubApi;
 		$this->installer = $installer;
 		$this->dataPath = "$dataDir/versions.json";
 		$this->usersWhitelist = $usersWhitelist;
+		$this->versionsBlacklist = $versionsBlacklist;
 	}
 
 
@@ -104,6 +108,8 @@ class PhpStanVersions
 				}
 			}
 		}
+
+		$result = array_diff($result, $this->versionsBlacklist);
 
 		asort($result);
 		return $result;
