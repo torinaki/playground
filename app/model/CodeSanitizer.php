@@ -54,7 +54,7 @@ class CodeSanitizer
 
 			} elseif ($node instanceof Node\Stmt\ClassLike) {
 				foreach ($node->stmts as $stmt) {
-					if ($stmt instanceof Node\Stmt\ClassMethod) {
+					if ($stmt instanceof Node\Stmt\ClassMethod && $stmt->stmts) {
 						$stmt->stmts = [];
 					}
 				}
