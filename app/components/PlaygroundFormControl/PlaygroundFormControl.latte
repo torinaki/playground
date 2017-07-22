@@ -59,7 +59,7 @@
 		</div>
 
 		<input n:name="analyzeAndForget" value="Preview">
-		<input n:name="analyzeAndPersist" value="Analyze &amp; Persist">
+		<input n:ifset="$form[analyzeAndPersist]" n:name="analyzeAndPersist" value="Analyze &amp; Persist">
 	</form>
 </div>
 

@@ -57,7 +57,6 @@ class PlaygroundFormFactory
 			->setRequired();
 
 		$form->addSubmit('analyzeAndForget');
-		$form->addSubmit('analyzeAndPersist');
 
 		if ($this->defaults) {
 			$form->setDefaults([
@@ -76,6 +75,10 @@ class PlaygroundFormFactory
 			foreach ($this->configValidator->validate($values['config']) as $configError) {
 				$form->addError($configError);
 			}
+		};
+
+		$form->onSuccess[] = function (UI\Form $form): void {
+			$form->addSubmit('analyzeAndPersist');
 		};
 
 		return $form;
