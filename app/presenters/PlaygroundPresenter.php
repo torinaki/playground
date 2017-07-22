@@ -2,56 +2,44 @@
 
 namespace App\Presenters;
 
+use App\Components\PlaygroundFormControl;
+use App\Components\PlaygroundFormControlFactory;
+use App\Components\TerminalOutputControl;
+use App\Components\TerminalOutputControlFactory;
 use App\Model\AnalyzerInput;
 use App\Model\AnalyzerOutput;
-use App\Model\CodeValidator;
-use App\Model\ConfigValidator;
-use App\Model\GitShaHex;
 use App\Model\PhpStanAnalyzer;
-use App\Model\PhpStanVersions;
-use Latte\Runtime\Html;
 use Nette\Application\UI;
-use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
 
 class PlaygroundPresenter extends UI\Presenter
 {
-	/** @var CodeValidator */
-	private $codeValidator;
-
-	/** @var ConfigValidator */
-	private $configValidator;
-
-	/** @var PhpStanVersions */
-	private $versions;
-
 	/** @var PhpStanAnalyzer */
 	private $analyzer;
 
-	/** @var AnsiToHtmlConverter */
-	private $ansiToHtmlConverter;
+	/** @var PlaygroundFormControlFactory */
+	private $playgroundFormControlFactory;
+
+	/** @var TerminalOutputControlFactory */
+	private $terminalOutputControlFactory;
 
 	/** @var NULL|AnalyzerOutput */
 	private $output;
 
 
 	public function __construct(
-		CodeValidator $codeValidator,
-		ConfigValidator $configValidator,
-		PhpStanVersions $versions,
 		PhpStanAnalyzer $analyzer,
-		AnsiToHtmlConverter $ansiToHtmlConverter
+		PlaygroundFormControlFactory $playgroundFormControlFactory,
+		TerminalOutputControlFactory $terminalOutputControlFactory
 	) {
 		parent::__construct();
-		$this->codeValidator = $codeValidator;
-		$this->configValidator = $configValidator;
-		$this->versions = $versions;
 		$this->analyzer = $analyzer;
-		$this->ansiToHtmlConverter = $ansiToHtmlConverter;
+		$this->playgroundFormControlFactory = $playgroundFormControlFactory;
+		$this->terminalOutputControlFactory = $terminalOutputControlFactory;
 	}
 
 
-	public function actionDefault(?string $inputHash = NULL)
+	public function actionDefault(?string $inputHash = NULL): void
 	{
 		if ($inputHash !== NULL) {
 			$this->output = $this->analyzer->fetchOutput($inputHash);
@@ -60,98 +48,38 @@ class PlaygroundPresenter extends UI\Presenter
 				$this->error();
 			}
 
-			$version = (string) $this->output->getInput()->getPhpStanVersion();
-			$versionItems = $this->versions->fetch();
-			if (!isset($versionItems[$version])) {
-				$versionItems[$version] = $version;
-				$this['form']['version']->setItems($versionItems);
-			}
-
-			$this['form']->setDefaults([
-				'phpCode' => $this->output->getInput()->getPhpCode(),
-				'config' => $this->output->getInput()->getConfig(),
-				'level' => $this->output->getInput()->getLevel(),
-				'version' => $version,
-			]);
+			$input = $this->output->getInput();
+			$this['playgroundForm']->setDefaults($input);
 		}
 	}
 
 
-	public function renderDefault()
+	public function renderDefault(): void
 	{
 		if ($this->output !== NULL) {
 			$ansiOutput = $this->output->getOutput();
-			$htmlOutput = $this->ansiToHtmlConverter->convert($ansiOutput);
-			$this->template->htmlOutput = new Html($htmlOutput);
+			$this['terminalOutput']->writeRaw($ansiOutput);
 		}
 	}
 
 
-	protected function createComponentForm(): UI\Form
+	protected function createComponentPlaygroundForm(): PlaygroundFormControl
 	{
-		$form = new UI\Form();
-		$form->addTextArea('phpCode')
-			->setRequired()
-			->setDefaultValue('<?php declare(strict_types = 1);
-
-class HelloWorld
-{
-	public function sayHello(DateTimeImutable $date): void
-	{
-		echo \'Hello, \' . $date->format(\'j. n. Y\');
+		return $this->playgroundFormControlFactory->create(
+			function (AnalyzerInput $input): void {
+				$this->analyzer->analyze($input);
+				$this->redirect('this', ['inputHash' => $input->getHash()]);
+			},
+			function (array $errors): void {
+				$this['terminalOutput']->getStyle()->error($errors);
+				$this->output = NULL;
+			}
+		);
 	}
-}
-');
 
-		$form->addTextArea('config')
-			->setRequired(FALSE)
-			->setDefaultValue('parameters:
-	polluteCatchScopeWithTryAssignments: false
-	polluteScopeWithLoopInitialAssignments: false
-	earlyTerminatingMethodCalls: []
-	universalObjectCratesClasses: []
-	ignoreErrors: []
-');
 
-		$form->addInteger('level')
-			->setRequired()
-			->addRule($form::MIN, 'Level must be non-negative integer', 0)
-			->setDefaultValue(6);
-
-		$versionItems = $this->versions->fetch();
-		$form->addSelect('version', NULL, $versionItems)
-			->setRequired()
-			->setDefaultValue(array_search('master', $versionItems));
-
-		$form->addSubmit('send');
-
-		$form->onValidate[] = function (UI\Form $form, array $values): void {
-			foreach ($this->codeValidator->validate($values['phpCode']) as $phpCodeError) {
-				$form->addError($phpCodeError);
-			}
-
-			foreach ($this->configValidator->validate($values['config']) as $configError) {
-				$form->addError($configError);
-			}
-		};
-
-		$form->onSuccess[] = function (UI\Form $form, array $values): void {
-			$input = new AnalyzerInput(
-				new GitShaHex($values['version']),
-				$values['phpCode'],
-				$values['level'],
-				$values['config']
-			);
-
-			$this->analyzer->analyze($input);
-			$this->redirect('this', ['inputHash' => $input->getHash()]);
-		};
-
-		$form->onError[] = function (UI\Form $form) {
-			$this->output = NULL;
-			$this->template->htmlOutput = implode("\n", $form->errors);
-		};
-
-		return $form;
+	protected function createComponentTerminalOutput(): TerminalOutputControl
+	{
+		return $this->terminalOutputControlFactory->create();
 	}
 }

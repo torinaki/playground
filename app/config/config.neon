@@ -46,7 +46,7 @@ nette.application:
 
 
 services:
-	# app
+	# app model
 	- App\Model\PhpStanInstaller(
 		tempDir: %tempDir%/downloads
 		targetDir: %phpStanDir%
@@ -67,6 +67,12 @@ services:
 		topLevelKeysWhitelist: %config.topLevelKeysWhitelist%
 		parameterKeysWhitelist: %config.parameterKeysWhitelist%
 	)
+
+
+	# app ui
+	- App\Components\PlaygroundFormFactory
+	- App\Components\PlaygroundFormControlFactory
+	- App\Components\TerminalOutputControlFactory
 
 
 	# nette/application

@@ -1,19 +1,18 @@
 <!DOCTYPE html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width">
 
-	<title>PHPStan Playground</title>
-</head>
+<style>
+	body,
+	html {
+		background: #262626;
+		color: #e4e4e4;
+		font-family: sans-serif;
+	}
+</style>
 
-<body>
-	<div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
+<title>PHPStan Playground</title>
 
-	{include content}
+{include content}
 
-	{block scripts}
-		<script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
-	{/block}
-</body>
-</html>
+<script src="https://nette.github.io/resources/js/netteForms.min.js"></script>
