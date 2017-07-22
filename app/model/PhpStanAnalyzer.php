@@ -61,8 +61,9 @@ class PhpStanAnalyzer
 		$process->run();
 
 		$output = $process->getOutput();
-		$output = str_replace(" in $includedFilePath", '', $output);
-		$output = str_replace($includedFilePath, '', $output);
+		$output = $this->clearPathFromOutput($output, dirname($binDir), '<PHPStan>');
+		$output = $this->clearPathFromOutput($output, " in $includedFilePath", '');
+		$output = $this->clearPathFromOutput($output, $resultDirPath, '');
 		$output = new AnalyzerOutput($input, $output);
 
 		$this->createInputFile($input, $inputFilePath);
@@ -134,7 +135,7 @@ class PhpStanAnalyzer
 	private function getPhpStanBinDir(AnalyzerInput $input): string
 	{
 		$phpStanVersion = $input->getPhpStanVersion();
-		return "{$this->phpStanDir}/{$phpStanVersion}/bin";
+		return realpath("{$this->phpStanDir}/{$phpStanVersion}/bin");
 	}
 
 
@@ -189,5 +190,14 @@ class PhpStanAnalyzer
 		$output = new AnalyzerOutput($input, $output);
 
 		return $output;
+	}
+
+
+	private function clearPathFromOutput(string $output, string $path, string $replacement): string
+	{
+		$path = strtr($path, '\\', '/');
+		$path = preg_quote($path, '/');
+		$path = str_replace('\/', '[\\\\/]', $path);
+		return preg_replace("#$path#i", $replacement, $output);
 	}
 }
