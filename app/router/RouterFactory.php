@@ -10,6 +10,6 @@ class RouterFactory
 {
 	public static function createRouter(): IRouter
 	{
-		return new Route('[r/<inputHash>]', 'Homepage:default');
+		return new Route('[r/<inputHash>]', 'Playground:default');
 	}
 }

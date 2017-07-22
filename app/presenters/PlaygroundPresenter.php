@@ -14,7 +14,7 @@ use Nette\Application\UI;
 use SensioLabs\AnsiConverter\AnsiToHtmlConverter;
 
 
-class HomepagePresenter extends UI\Presenter
+class PlaygroundPresenter extends UI\Presenter
 {
 	/** @var CodeValidator */
 	private $codeValidator;
