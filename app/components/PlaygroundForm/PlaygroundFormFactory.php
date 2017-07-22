@@ -56,7 +56,8 @@ class PlaygroundFormFactory
 			->setItems($versionItems)
 			->setRequired();
 
-		$form->addSubmit('send');
+		$form->addSubmit('analyzeAndForget');
+		$form->addSubmit('analyzeAndPersist');
 
 		if ($this->defaults) {
 			$form->setDefaults([

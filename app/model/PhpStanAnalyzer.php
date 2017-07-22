@@ -31,7 +31,7 @@ class PhpStanAnalyzer
 	}
 
 
-	public function analyze(AnalyzerInput $input): AnalyzerOutput
+	public function analyze(AnalyzerInput $input, bool $persist): AnalyzerOutput
 	{
 		$inputHash = $input->getHash();
 		$resultDirPath = $this->getResultDirPath($inputHash);
@@ -66,8 +66,13 @@ class PhpStanAnalyzer
 		$output = $this->clearPathFromOutput($output, $resultDirPath, '');
 		$output = new AnalyzerOutput($input, $output);
 
-		$this->createInputFile($input, $inputFilePath);
-		$this->createOutputFile($output, $outputFilePath);
+		if ($persist) {
+			$this->createInputFile($input, $inputFilePath);
+			$this->createOutputFile($output, $outputFilePath);
+
+		} else {
+			FileSystem::delete($resultDirPath);
+		}
 
 		return $output;
 	}

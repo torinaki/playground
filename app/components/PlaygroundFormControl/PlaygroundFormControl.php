@@ -12,7 +12,7 @@ class PlaygroundFormControl extends UI\Control
 	/** @var PlaygroundFormFactory */
 	private $formFactory;
 
-	/** @var callable (AnalyzerInput $input) */
+	/** @var callable (AnalyzerInput $input, bool $persist) */
 	private $onSuccess;
 
 	/** @var callable (array $errors) */
@@ -55,13 +55,16 @@ class PlaygroundFormControl extends UI\Control
 	{
 		$form = $this->formFactory->create();
 
-		$form->onSuccess[] = function (UI\Form $_, array $values): void {
-			($this->onSuccess)(new AnalyzerInput(
+		$form->onSuccess[] = function (UI\Form $form, array $values): void {
+			$input = new AnalyzerInput(
 				new GitShaHex($values['version']),
 				$values['phpCode'],
 				$values['level'],
 				$values['config']
-			));
+			);
+
+			$persist = $form['analyzeAndPersist']->isSubmittedBy();
+			($this->onSuccess)($input, $persist);
 		};
 
 		$form->onError[] = function (UI\Form $form) {

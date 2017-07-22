@@ -66,9 +66,16 @@ class PlaygroundPresenter extends UI\Presenter
 	protected function createComponentPlaygroundForm(): PlaygroundFormControl
 	{
 		return $this->playgroundFormControlFactory->create(
-			function (AnalyzerInput $input): void {
-				$this->analyzer->analyze($input);
-				$this->redirect('this', ['inputHash' => $input->getHash()]);
+			function (AnalyzerInput $input, bool $persist): void {
+				$output = $this->analyzer->analyze($input, $persist);
+
+				if ($persist) {
+					$this->redirect('this', ['inputHash' => $input->getHash()]);
+
+				} else {
+					$this['terminalOutput']->writeRaw($output->getOutput());
+					$this->output = NULL;
+				}
 			},
 			function (array $errors): void {
 				$this['terminalOutput']->getStyle()->error($errors);
