@@ -3,27 +3,28 @@ parameters:
 	phpStanDir: %appDir%/../phpstan
 	dataDir: %appDir%/../data
 
-	usersWhitelist:
-		- JanTvrdik
-		- ondrejmirtes
-		- phpstan
+	versions:
+		labelsBlacklist:
+			- '0.1'
+			- '0.2'
+			- '0.2.1'
+			- '0.2.2'
+			- '0.3'
+			- '0.3.1'
+			- '0.4'
+			- '0.4.1'
+			- '0.4.2'
 
-	versionsBlacklist:
-		- '0.1'
-		- '0.2'
-		- '0.2.1'
-		- '0.2.2'
-		- '0.3'
-		- '0.3.1'
-		- '0.4'
-		- '0.4.1'
-		- '0.4.2'
+		pullRequestOwnersWhitelist:
+			- JanTvrdik
+			- ondrejmirtes
+			- phpstan
 
-	configWhitelist:
-		topLevelKeys:
+	config:
+		topLevelKeysWhitelist:
 			- parameters
 
-		parameterKeys:
+		parameterKeysWhitelist:
 			- checkArgumentsPassedByReference
 			- checkFunctionArgumentTypes
 			- checkNullables
@@ -51,8 +52,8 @@ services:
 	)
 	- App\Model\PhpStanVersions(
 		dataDir: %dataDir%
-		usersWhitelist: %usersWhitelist%
-		versionsBlacklist: %versionsBlacklist%
+		usersWhitelist: %versions.pullRequestOwnersWhitelist%
+		versionsBlacklist: %versions.labelsBlacklist%
 	)
 	- App\Model\PhpStanAnalyzer(
 		phpBin: %phpBin%
@@ -62,8 +63,8 @@ services:
 	- App\Model\CodeSanitizer
 	- App\Model\CodeValidator
 	- App\Model\ConfigValidator(
-		topLevelKeysWhitelist: %configWhitelist.topLevelKeys%
-		parameterKeysWhitelist: %configWhitelist.parameterKeys%
+		topLevelKeysWhitelist: %config.topLevelKeysWhitelist%
+		parameterKeysWhitelist: %config.parameterKeysWhitelist%
 	)
 
 
