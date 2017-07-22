@@ -30,7 +30,12 @@ class ConfigValidator
 		$errors = [];
 
 		try {
-			$decoded = Neon::decode($config);
+			$decoded = Neon::decode($config) ?? [];
+
+			if (!is_array($decoded)) {
+				$errors[] = 'Invalid config file: value must be array';
+				return $errors;
+			}
 
 			$topLevelKeys = array_keys($decoded);
 			$disallowedKeys = array_diff($topLevelKeys, $this->topLevelKeysWhitelist);
