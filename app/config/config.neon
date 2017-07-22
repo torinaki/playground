@@ -19,6 +19,7 @@ parameters:
 			- JanTvrdik
 			- ondrejmirtes
 			- phpstan
+			- stekycz
 
 	config:
 		topLevelKeysWhitelist:
