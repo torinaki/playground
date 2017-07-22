@@ -175,7 +175,13 @@ class PhpStanAnalyzer
 
 	private function createOutputFile(AnalyzerOutput $output, string $outputFilePath): string
 	{
-		Filesystem::write("$outputFilePath.tmp", $output->getOutput());
+		$decodedOutput = (object) [
+			'output' => $output->getOutput(),
+		];
+
+		$encodedOutput = Json::encode($decodedOutput, Json::PRETTY);
+
+		Filesystem::write("$outputFilePath.tmp", $encodedOutput);
 		FileSystem::rename("$outputFilePath.tmp", $outputFilePath);
 
 		return $outputFilePath;
@@ -184,10 +190,11 @@ class PhpStanAnalyzer
 
 	private function fetchOutputFile(string $inputFilePath, string $outputFilePath): AnalyzerOutput
 	{
-		$input = $this->fetchInputFile($inputFilePath);
+		$encodedOutput = FileSystem::read($outputFilePath);
+		$decodedOutput = Json::decode($encodedOutput);
 
-		$output = FileSystem::read($outputFilePath);
-		$output = new AnalyzerOutput($input, $output);
+		$input = $this->fetchInputFile($inputFilePath);
+		$output = new AnalyzerOutput($input, $decodedOutput->output);
 
 		return $output;
 	}
