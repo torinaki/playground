@@ -38,6 +38,29 @@ parameters:
 			- reportUnmatchedIgnoredErrors
 			- universalObjectCratesClasses
 
+	playgroundFormDefaults:
+		level: 6
+		versionLabel: master
+		phpCode: '''
+			<?php declare(strict_types = 1);
+
+			class HelloWorld
+			{
+				public function sayHello(DateTimeImutable $date): void
+				{
+					echo 'Hello, ' . $date->format('j. n. Y');
+				}
+			}
+		'''
+		config: '''
+			parameters:
+				polluteCatchScopeWithTryAssignments: false
+				polluteScopeWithLoopInitialAssignments: false
+				earlyTerminatingMethodCalls: []
+				universalObjectCratesClasses: []
+				ignoreErrors: []
+		'''
+
 
 nette.application:
 	errorPresenter: Error
@@ -70,7 +93,7 @@ services:
 
 
 	# app ui
-	- App\Components\PlaygroundFormFactory
+	- App\Components\PlaygroundFormFactory(defaults: %playgroundFormDefaults%)
 	- App\Components\PlaygroundFormControlFactory
 	- App\Components\TerminalOutputControlFactory
 

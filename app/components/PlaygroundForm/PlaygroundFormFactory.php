@@ -19,56 +19,53 @@ class PlaygroundFormFactory
 	/** @var PhpStanVersions */
 	private $versions;
 
+	/** @var array */
+	private $defaults;
+
 
 	public function __construct(
 		CodeValidator $codeValidator,
 		ConfigValidator $configValidator,
-		PhpStanVersions $versions
+		PhpStanVersions $versions,
+		array $defaults
 	) {
 		$this->codeValidator = $codeValidator;
 		$this->configValidator = $configValidator;
 		$this->versions = $versions;
+		$this->defaults = $defaults;
 	}
 
 
 	public function create(): UI\Form
 	{
-		$form = new UI\Form();
-		$form->addTextArea('phpCode')
-			->setRequired()
-			->setDefaultValue('<?php declare(strict_types = 1);
+		$versionItems = $this->versions->fetch();
 
-class HelloWorld
-{
-	public function sayHello(DateTimeImutable $date): void
-	{
-		echo \'Hello, \' . $date->format(\'j. n. Y\');
-	}
-}
-');
+		$form = new UI\Form();
+
+		$form->addTextArea('phpCode')
+			->setRequired();
 
 		$form->addTextArea('config')
-			->setRequired(FALSE)
-			->setDefaultValue('parameters:
-	polluteCatchScopeWithTryAssignments: false
-	polluteScopeWithLoopInitialAssignments: false
-	earlyTerminatingMethodCalls: []
-	universalObjectCratesClasses: []
-	ignoreErrors: []
-');
+			->setRequired(FALSE);
 
 		$form->addInteger('level')
 			->setRequired()
-			->addRule($form::MIN, 'Level must be non-negative integer', 0)
-			->setDefaultValue(6);
+			->addRule($form::MIN, 'Level must be non-negative integer', 0);
 
-		$versionItems = $this->versions->fetch();
-		$masterShaHex = array_search('master', $versionItems);
-		$form->addSelect('version', NULL, $versionItems)
-			->setRequired()
-			->setDefaultValue($masterShaHex);
+		$form->addSelect('version')
+			->setItems($versionItems)
+			->setRequired();
 
 		$form->addSubmit('send');
+
+		if ($this->defaults) {
+			$form->setDefaults([
+				'level' => $this->defaults['level'],
+				'version' => array_search($this->defaults['versionLabel'], $versionItems, TRUE),
+				'phpCode' => $this->defaults['phpCode'],
+				'config' => $this->defaults['config'],
+			]);
+		}
 
 		$form->onValidate[] = function (UI\Form $form, array $values): void {
 			foreach ($this->codeValidator->validate($values['phpCode']) as $phpCodeError) {
