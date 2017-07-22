@@ -37,7 +37,7 @@ parameters:
 			- universalObjectCratesClasses
 
 
-application:
+nette.application:
 	errorPresenter: Error
 	mapping:
 		*: App\*Module\Presenters\*Presenter
@@ -67,8 +67,8 @@ services:
 	)
 
 
-	# nette/*
-	@Nette\Application\IRouter: App\RouterFactory::createRouter()
+	# nette/application
+	- App\RouterFactory::createRouter()
 
 
 	# milo/github-api

@@ -13,6 +13,16 @@ return function (array $parameters = []) {
 		->addDirectory(__DIR__)
 		->register();
 
+	$configurator->defaultExtensions = [
+		'extensions' => Nette\DI\Extensions\ExtensionsExtension::class,
+		'nette.application' => [Nette\Bridges\ApplicationDI\ApplicationExtension::class, ['%debugMode%', ['%appDir%'], '%tempDir%/cache']],
+		'nette.http' => [Nette\Bridges\HttpDI\HttpExtension::class, ['%consoleMode%']],
+		'nette.http.session' => [Nette\Bridges\HttpDI\SessionExtension::class, ['%debugMode%', '%consoleMode%']],
+		'latte' => [Nette\Bridges\ApplicationDI\LatteExtension::class, ['%tempDir%/cache/latte', '%debugMode%']],
+		'tracy' => [Tracy\Bridges\Nette\TracyExtension::class, ['%debugMode%', '%consoleMode%']],
+		'inject' => Nette\DI\Extensions\InjectExtension::class,
+	];
+
 	$configurator->addConfig(__DIR__ . '/config/config.neon');
 	$configurator->addConfig(__DIR__ . '/config/config.local.neon');
 
