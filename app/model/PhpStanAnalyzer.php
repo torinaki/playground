@@ -47,7 +47,7 @@ class PhpStanAnalyzer
 		$analyzedFilePath = $this->createAnalyzedFile($input, $resultDirPath);
 
 		$commandLine = [
-			$this->phpBin,
+			$this->phpBin, '-ddisplay_errors=1',
 			'phpstan', '--ansi', 'analyze',
 			'--no-progress',
 			'--level', $input->getLevel(),
