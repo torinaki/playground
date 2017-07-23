@@ -78,6 +78,17 @@ class PhpStanAnalyzer
 	}
 
 
+	public function fetchInput(string $inputHash): ?AnalyzerInput
+	{
+		$resultDirPath = $this->getResultDirPath($inputHash);
+		$inputFilePath = $this->getInputFilePath($resultDirPath);
+
+		return is_file($inputFilePath)
+			? $this->fetchInputFile($inputFilePath)
+			: NULL;
+	}
+
+
 	public function fetchOutput(string $inputHash): ?AnalyzerOutput
 	{
 		$resultDirPath = $this->getResultDirPath($inputHash);

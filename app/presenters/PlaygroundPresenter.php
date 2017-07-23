@@ -42,13 +42,17 @@ class PlaygroundPresenter extends UI\Presenter
 	public function actionDefault(?string $inputHash = NULL): void
 	{
 		if ($inputHash !== NULL) {
-			$this->output = $this->analyzer->fetchOutput($inputHash);
+			if ($output = $this->analyzer->fetchOutput($inputHash)) {
+				$input = $output->getInput();
 
-			if ($this->output === NULL) {
+			} elseif ($input = $this->analyzer->fetchInput($inputHash)) {
+				$output = $this->analyzer->analyze($input, TRUE);
+
+			} else {
 				$this->error();
 			}
 
-			$input = $this->output->getInput();
+			$this->output = $output;
 			$this['playgroundForm']->setDefaults($input);
 		}
 	}
