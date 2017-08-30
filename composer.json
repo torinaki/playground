@@ -30,6 +30,7 @@
 		"nikic/php-parser": "~3.0",
 		"milo/github-api": "~1.4",
 		"composer/composer": "~1.4",
+		"composer/semver": "~1.4",
 		"symfony/process": "~3.3",
 		"sensiolabs/ansi-to-html": "~1.1"
 	}
