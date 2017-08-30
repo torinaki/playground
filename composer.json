@@ -9,7 +9,8 @@
 	},
 	"extra": {
 		"cleaner-ignore": {
-			"composer/composer": ["res"]
+			"composer/composer": ["res"],
+			"composer/ca-bundle": ["res"]
 		}
 	},
 	"require": {
