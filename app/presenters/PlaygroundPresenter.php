@@ -23,6 +23,9 @@ class PlaygroundPresenter extends UI\Presenter
 	/** @var TerminalOutputControlFactory */
 	private $terminalOutputControlFactory;
 
+	/** @var NULL|AnalyzerInput */
+	private $input;
+
 	/** @var NULL|AnalyzerOutput */
 	private $output;
 
@@ -52,17 +55,20 @@ class PlaygroundPresenter extends UI\Presenter
 				$this->error();
 			}
 
+			$this->input = $input;
 			$this->output = $output;
-			$this['playgroundForm']->setDefaults($input);
 		}
 	}
 
 
 	public function renderDefault(): void
 	{
+		if ($this->input !== NULL) {
+			$this['playgroundForm']->setDefaults($this->input);
+		}
+
 		if ($this->output !== NULL) {
-			$ansiOutput = $this->output->getOutput();
-			$this['terminalOutput']->writeRaw($ansiOutput);
+			$this['terminalOutput']->writeRaw($this->output->getOutput());
 		}
 	}
 
