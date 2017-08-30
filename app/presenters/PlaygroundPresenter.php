@@ -63,10 +63,6 @@ class PlaygroundPresenter extends UI\Presenter
 
 	public function renderDefault(): void
 	{
-		if ($this->input !== NULL) {
-			$this['playgroundForm']->setDefaults($this->input);
-		}
-
 		if ($this->output !== NULL) {
 			$this['terminalOutput']->writeRaw($this->output->getOutput());
 		}
@@ -76,6 +72,7 @@ class PlaygroundPresenter extends UI\Presenter
 	protected function createComponentPlaygroundForm(): PlaygroundFormControl
 	{
 		return $this->playgroundFormControlFactory->create(
+			$this->input,
 			function (AnalyzerInput $input, bool $persist): void {
 				$output = $this->analyzer->analyze($input, $persist);
 

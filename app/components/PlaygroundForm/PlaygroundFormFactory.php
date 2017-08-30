@@ -2,6 +2,7 @@
 
 namespace App\Components;
 
+use App\Model\AnalyzerInput;
 use App\Model\CodeValidator;
 use App\Model\ConfigValidator;
 use App\Model\GitShaHex;
@@ -44,7 +45,7 @@ class PlaygroundFormFactory
 	}
 
 
-	public function create(): UI\Form
+	public function create(?AnalyzerInput $defaultInput): UI\Form
 	{
 		$versionItems = $this->versions->fetch();
 
@@ -66,25 +67,26 @@ class PlaygroundFormFactory
 
 		$form->addSubmit('analyzeAndForget');
 
-		$form->setDefaults($this->defaults);
+		$versionSelect = $form['version'];
+		assert($versionSelect instanceof SelectBox);
 
-		$form->onAnchor[] = function (UI\Form $form) use ($versionItems): void {
-			$versionSelect = $form['version'];
-			assert($versionSelect instanceof SelectBox);
+		if ($defaultInput) {
+			$shaHex = (string) $defaultInput->getPhpStanVersion();
+			$this->extendVersionItems($versionSelect, $versionItems, $shaHex);
+			$form->setDefaults([
+				'phpCode' => $defaultInput->getPhpCode(),
+				'config' => $defaultInput->getConfig(),
+				'level' => $defaultInput->getLevel(),
+				'version' => $shaHex,
+			]);
 
+		} else {
+			$form->setDefaults($this->defaults);
+		}
+
+		$form->onAnchor[] = function () use ($versionSelect, $versionItems): void {
 			$shaHex = $versionSelect->getRawValue() ?? '';
-			if (!GitShaHex::isValid($shaHex)) {
-				return;
-
-			} elseif (isset($versionSelect->getItems()[$shaHex])) {
-				return;
-
-			} elseif (!$this->installer->isInstalled(new GitShaHex($shaHex))) {
-				return;
-			}
-
-			$versionItems['Commits'] = [$shaHex => $shaHex];
-			$versionSelect->setItems($versionItems);
+			$this->extendVersionItems($versionSelect, $versionItems, $shaHex);
 		};
 
 		$form->onValidate[] = function (UI\Form $form, array $values): void {
@@ -102,5 +104,22 @@ class PlaygroundFormFactory
 		};
 
 		return $form;
+	}
+
+
+	private function extendVersionItems(SelectBox $versionSelect, array $versionItems, string $shaHex): void
+	{
+		if (!GitShaHex::isValid($shaHex)) {
+			return;
+
+		} elseif (isset($versionSelect->getItems()[$shaHex])) {
+			return;
+
+		} elseif (!$this->installer->isInstalled(new GitShaHex($shaHex))) {
+			return;
+		}
+
+		$versionItems['Commits'] = [$shaHex => $shaHex];
+		$versionSelect->setItems($versionItems);
 	}
 }

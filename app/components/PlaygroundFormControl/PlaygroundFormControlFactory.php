@@ -2,8 +2,10 @@
 
 namespace App\Components;
 
+use App\Model\AnalyzerInput;
+
 
 interface PlaygroundFormControlFactory
 {
-	public function create(callable $onSuccess, callable $onError): PlaygroundFormControl;
+	public function create(?AnalyzerInput $defaultInput, callable $onSuccess, callable $onError): PlaygroundFormControl;
 }

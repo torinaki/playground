@@ -12,6 +12,9 @@ class PlaygroundFormControl extends UI\Control
 	/** @var PlaygroundFormFactory */
 	private $formFactory;
 
+	/** @var NULL|AnalyzerInput */
+	private $defaultInput;
+
 	/** @var callable (AnalyzerInput $input, bool $persist) */
 	private $onSuccess;
 
@@ -19,28 +22,13 @@ class PlaygroundFormControl extends UI\Control
 	private $onError;
 
 
-	public function __construct(PlaygroundFormFactory $formFactory, callable $onSuccess, callable $onError)
+	public function __construct(PlaygroundFormFactory $formFactory, ?AnalyzerInput $defaultInput, callable $onSuccess, callable $onError)
 	{
 		parent::__construct();
 		$this->formFactory = $formFactory;
+		$this->defaultInput = $defaultInput;
 		$this->onSuccess = $onSuccess;
 		$this->onError = $onError;
-	}
-
-
-	public function setDefaults(AnalyzerInput $input): void
-	{
-		$version = (string) $input->getPhpStanVersion();
-
-		$versionInput = $this['form']['version'];
-		$versionInput->setItems($versionInput->getItems() + [$version => $version]);
-
-		$this['form']->setDefaults([
-			'phpCode' => $input->getPhpCode(),
-			'config' => $input->getConfig(),
-			'level' => $input->getLevel(),
-			'version' => $version,
-		]);
 	}
 
 
@@ -53,7 +41,7 @@ class PlaygroundFormControl extends UI\Control
 
 	protected function createComponentForm(): UI\Form
 	{
-		$form = $this->formFactory->create();
+		$form = $this->formFactory->create($this->defaultInput);
 
 		$form->onSuccess[] = function (UI\Form $form, array $values): void {
 			$input = new AnalyzerInput(
