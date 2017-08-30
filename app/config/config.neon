@@ -15,6 +15,7 @@ parameters:
 			- '0.4'
 			- '0.4.1'
 			- '0.4.2'
+			- '0.8.1'
 
 		pullRequestOwnersWhitelist:
 			- JanTvrdik
@@ -96,6 +97,7 @@ services:
 	- PhpParser\Lexer
 	- PhpParser\Parser\Php7
 	- PhpParser\PrettyPrinter\Standard
+
 
 	# sensiolabs/ansi-to-html
 	- SensioLabs\AnsiConverter\Theme\SolarizedXTermTheme
