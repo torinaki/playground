@@ -125,7 +125,7 @@ class PhpStanAnalyzer
 	{
 		$sanitizedCode = $this->codeSanitizer->sanitize($input->getPhpCode());
 		$includedFilePath = "$resultDirPath/included.php";
-		Filesystem::write($includedFilePath, $sanitizedCode);
+		FileSystem::write($includedFilePath, $sanitizedCode);
 
 		return realpath($includedFilePath);
 	}
@@ -134,7 +134,7 @@ class PhpStanAnalyzer
 	private function createConfigFile(AnalyzerInput $input, string $resultDirPath): string
 	{
 		$configFilePath = "$resultDirPath/config.neon";
-		Filesystem::write($configFilePath, $input->getConfig());
+		FileSystem::write($configFilePath, $input->getConfig());
 
 		return realpath($configFilePath);
 	}
@@ -143,7 +143,7 @@ class PhpStanAnalyzer
 	private function createAnalyzedFile(AnalyzerInput $input, string $resultDirPath): string
 	{
 		$analyzedFilePath = "$resultDirPath/analyzed.php";
-		Filesystem::write($analyzedFilePath, $input->getPhpCode());
+		FileSystem::write($analyzedFilePath, $input->getPhpCode());
 
 		return realpath($analyzedFilePath);
 	}
@@ -168,7 +168,7 @@ class PhpStanAnalyzer
 
 		$encodedInput = Json::encode($decodedInput, Json::PRETTY);
 
-		Filesystem::write("$inputFilePath.tmp", $encodedInput);
+		FileSystem::write("$inputFilePath.tmp", $encodedInput);
 		FileSystem::rename("$inputFilePath.tmp", $inputFilePath);
 
 		return $inputFilePath;
@@ -199,7 +199,7 @@ class PhpStanAnalyzer
 
 		$encodedOutput = Json::encode($decodedOutput, Json::PRETTY);
 
-		Filesystem::write("$outputFilePath.tmp", $encodedOutput);
+		FileSystem::write("$outputFilePath.tmp", $encodedOutput);
 		FileSystem::rename("$outputFilePath.tmp", $outputFilePath);
 
 		return $outputFilePath;
