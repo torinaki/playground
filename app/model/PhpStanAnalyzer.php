@@ -58,6 +58,7 @@ class PhpStanAnalyzer
 
 		$binDir = $this->getPhpStanBinDir($input);
 		$process = new Process($commandLine, $binDir);
+		$process->setTimeout(10);
 		$process->run();
 
 		$output = $process->getOutput();
