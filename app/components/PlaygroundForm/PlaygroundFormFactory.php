@@ -59,12 +59,8 @@ class PlaygroundFormFactory
 		$form->addSubmit('analyzeAndForget');
 
 		if ($this->defaults) {
-			$form->setDefaults([
-				'level' => $this->defaults['level'],
-				'version' => array_search($this->defaults['versionLabel'], $versionItems, TRUE),
-				'phpCode' => $this->defaults['phpCode'],
-				'config' => $this->defaults['config'],
-			]);
+			$this->defaults['version'] = array_search($this->defaults['versionLabel'], $versionItems, TRUE) ?: NULL;
+			$form->setDefaults($this->defaults);
 		}
 
 		$form->onValidate[] = function (UI\Form $form, array $values): void {
