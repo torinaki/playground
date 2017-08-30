@@ -51,18 +51,18 @@ class PlaygroundFormFactory
 		$form = new UI\Form();
 
 		$form->addTextArea('phpCode')
-			->setRequired();
+			->setRequired(FALSE);
 
 		$form->addTextArea('config')
 			->setRequired(FALSE);
 
 		$form->addInteger('level')
-			->setRequired()
+			->setRequired('Please select valid PHPStan level')
 			->addRule($form::MIN, 'Level must be non-negative integer', 0);
 
 		$form->addSelect('version')
 			->setItems($versionItems)
-			->setRequired();
+			->setRequired('Please select valid PHPStan version');
 
 		$form->addSubmit('analyzeAndForget');
 
