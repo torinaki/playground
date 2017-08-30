@@ -41,7 +41,6 @@ parameters:
 
 	playgroundFormDefaults:
 		level: 6
-		versionLabel: master
 		phpCode: '''
 			<?php declare(strict_types = 1);
 

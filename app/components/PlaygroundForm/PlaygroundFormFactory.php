@@ -66,10 +66,7 @@ class PlaygroundFormFactory
 
 		$form->addSubmit('analyzeAndForget');
 
-		if ($this->defaults) {
-			$this->defaults['version'] = array_search($this->defaults['versionLabel'], $versionItems, TRUE) ?: NULL;
-			$form->setDefaults($this->defaults);
-		}
+		$form->setDefaults($this->defaults);
 
 		$form->onAnchor[] = function (UI\Form $form) use ($versionItems): void {
 			$versionSelect = $form['version'];
