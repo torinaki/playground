@@ -28,6 +28,13 @@ class PhpStanInstaller
 	}
 
 
+	public function isInstalled(GitShaHex $shaHex): bool
+	{
+		$targetPath = $this->getTargetPath($shaHex);
+		return is_dir("$targetPath/vendor");
+	}
+
+
 	public function install(GitShaHex $shaHex): void
 	{
 		$targetPath = $this->getTargetPath($shaHex);
