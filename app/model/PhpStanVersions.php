@@ -2,10 +2,13 @@
 
 namespace App\Model;
 
+use Composer\Semver\Comparator;
+use Composer\Semver\VersionParser;
 use Milo\Github;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 use Nette\Utils\Strings;
+use stdClass;
 
 
 class PhpStanVersions
@@ -26,8 +29,13 @@ class PhpStanVersions
 	private $versionsBlacklist;
 
 
-	public function __construct(Github\Api $githubApi, PhpStanInstaller $installer, string $dataDir, array $usersWhitelist, array $versionsBlacklist)
-	{
+	public function __construct(
+		Github\Api $githubApi,
+		PhpStanInstaller $installer,
+		string $dataDir,
+		array $usersWhitelist,
+		array $versionsBlacklist
+	) {
 		$this->githubApi = $githubApi;
 		$this->installer = $installer;
 		$this->dataPath = "$dataDir/versions.json";
@@ -37,7 +45,7 @@ class PhpStanVersions
 
 
 	/**
-	 * @return string[] (shaHex => name)
+	 * @return string[] (groupName => (shaHex => name))
 	 */
 	public function fetch(): array
 	{
@@ -62,8 +70,10 @@ class PhpStanVersions
 
 	private function reinstall(array $versions): void
 	{
-		foreach ($versions as $shaHex => $refName) {
-			$this->installer->install(new GitShaHex($shaHex));
+		foreach ($versions as $groupName => $group) {
+			foreach ($group as $shaHex => $refName) {
+				$this->installer->install(new GitShaHex($shaHex));
+			}
 		}
 	}
 
@@ -78,54 +88,85 @@ class PhpStanVersions
 
 	private function fetchFromGitHub(): array
 	{
-		$result = [];
+		$tags = $this->fetchTags();
+		$branches = $this->fetchBranches();
+		$pullRequests = $this->fetchPullRequests();
 
-		foreach (['heads', 'tags'] as $group) {
-			$paginatedResponse = $this->githubApi->paginator('/repos/:owner/:repo/git/refs/:group', [
-				'owner' => 'phpstan',
-				'repo' => 'phpstan',
-				'group' => $group,
-				'per_page' => 100,
-			]);
+		return [
+			'Tags' => array_diff($tags, $this->versionsBlacklist),
+			'Branches' => array_diff($branches, $this->versionsBlacklist),
+			'Pull Requests' => array_diff($pullRequests, $this->versionsBlacklist),
+		];
+	}
 
-			foreach ($paginatedResponse as $response) {
-				foreach ($this->githubApi->decode($response) as $item) {
-					$result[$item->object->sha] = $this->getFriendlyRefName($item->ref);
-				}
+
+	private function fetchTags(): array
+	{
+		$result = $this->request('/repos/:owner/:repo/git/refs/tags', function (stdClass $item) {
+			yield "{$item->object->sha}" => Strings::after($item->ref, 'refs/tags/');
+		});
+
+		$vp = new VersionParser();
+		uasort($result, function (string $a, string $b) use ($vp): int {
+			$an = $vp->normalize($a);
+			$bn = $vp->normalize($b);
+
+			if ($an === $bn) {
+				return 0;
+
+			} elseif (Comparator::lessThan($an, $bn)) {
+				return +1;
+
+			} else {
+				return -1;
 			}
-		}
+		});
 
-		$paginatedResponse = $this->githubApi->paginator('/repos/:owner/:repo/pulls', [
-			'owner' => 'phpstan',
-			'repo' => 'phpstan',
-			'per_page' => 100,
-		]);
+		return $result;
+	}
 
-		foreach ($paginatedResponse as $response) {
-			foreach ($this->githubApi->decode($response) as $pr) {
-				if (in_array($pr->head->user->login, $this->usersWhitelist, TRUE)) {
-					$result[$pr->head->sha] = "#{$pr->number} ($pr->title)";
-				}
-			}
-		}
 
-		$result = array_diff($result, $this->versionsBlacklist);
+	private function fetchBranches(): array
+	{
+		$result = $this->request('/repos/:owner/:repo/git/refs/heads', function (stdClass $item) {
+			yield "{$item->object->sha}" => Strings::after($item->ref, 'refs/heads/');
+		});
 
 		asort($result);
 		return $result;
 	}
 
 
-	private function getFriendlyRefName(string $ref): string
+	private function fetchPullRequests(): array
 	{
-		if (Strings::startsWith($ref, 'refs/heads/')) {
-			return Strings::after($ref, 'refs/heads/');
+		$result = $this->request('/repos/:owner/:repo/pulls', function (stdClass $item) {
+			if (in_array($item->head->user->login, $this->usersWhitelist, TRUE)) {
+				yield "{$item->head->sha}" => "#{$item->number} ({$item->title})";
+			}
+		});
 
-		} elseif (Strings::startsWith($ref, 'refs/tags/')) {
-			return Strings::after($ref, 'refs/tags/');
+		asort($result);
+		return $result;
+	}
 
-		} else {
-			return $ref;
+
+	private function request(string $urlPath, callable $process): array
+	{
+		$paginatedResponse = $this->githubApi->paginator($urlPath, [
+			'owner' => 'phpstan',
+			'repo' => 'phpstan',
+			'per_page' => 100,
+		]);
+
+		$result = [];
+		foreach ($paginatedResponse as $response) {
+			foreach ($this->githubApi->decode($response) as $decoded) {
+				foreach ($process($decoded) as $shaHex => $label) {
+					$result[$shaHex] = $label;
+				}
+			}
 		}
+
+		return $result;
 	}
 }
