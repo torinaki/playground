@@ -43,6 +43,7 @@ use Composer\Semver\Semver;
  * @author Robert Schönthal <seroscho@googlemail.com>
  * @author Jordi Boggiano <j.boggiano@seld.be>
  * @author Jérémy Romey <jeremyFreeAgent>
+ * @author Mihai Plasoianu <mihai@plasoianu.de>
  */
 class ShowCommand extends BaseCommand
 {
@@ -156,6 +157,10 @@ EOT
             $repos = new CompositeRepository(array_merge(array($installedRepo), $defaultRepos));
         } else {
             $repos = $installedRepo = $this->getComposer()->getRepositoryManager()->getLocalRepository();
+            $rootPkg = $this->getComposer()->getPackage();
+            if (!$installedRepo->getPackages() && ($rootPkg->getRequires() || $rootPkg->getDevRequires())) {
+                $io->writeError('<warning>No dependencies installed. Try running composer install or update.</warning>');
+            }
         }
 
         if ($composer) {
@@ -196,8 +201,12 @@ EOT
                 $this->displayPackageTree($package, $installedRepo, $repos);
             } else {
                 $latestPackage = null;
+                $exitCode = 0;
                 if ($input->getOption('latest')) {
                     $latestPackage = $this->findLatestPackage($package, $composer, $phpVersion);
+                }
+                if ($input->getOption('outdated') && $input->getOption('strict') && $latestPackage && $latestPackage->getFullPrettyVersion() !== $package->getFullPrettyVersion() && !$latestPackage->isAbandoned()) {
+                    $exitCode = 1;
                 }
                 $this->printMeta($package, $versions, $installedRepo, $latestPackage ?: null);
                 $this->printLinks($package, 'requires');
@@ -213,7 +222,7 @@ EOT
                 $this->printLinks($package, 'replaces');
             }
 
-            return;
+            return $exitCode;
         }
 
         // show tree view if requested

@@ -278,7 +278,8 @@ class GitLabDriver extends VcsDriver
      */
     protected function getReferences($type)
     {
-        $resource = $this->getApiUrl().'/repository/'.$type.'?per_page=100';
+        $perPage = 100;
+        $resource = $this->getApiUrl().'/repository/'.$type.'?per_page='.$perPage;
 
         $references = array();
         do {
@@ -287,11 +288,16 @@ class GitLabDriver extends VcsDriver
             foreach ($data as $datum) {
                 $references[$datum['name']] = $datum['commit']['id'];
 
-              // Keep the last commit date of a reference to avoid
-             // unnecessary API call when retrieving the composer file.
-              $this->commits[$datum['commit']['id']] = $datum['commit'];
+                // Keep the last commit date of a reference to avoid
+                // unnecessary API call when retrieving the composer file.
+                $this->commits[$datum['commit']['id']] = $datum['commit'];
             }
-            $resource = $this->getNextPage();
+
+            if (count($data) >= $perPage) {
+                $resource = $this->getNextPage();
+            } else {
+                $resource = false;
+            }
         } while ($resource);
 
         return $references;
@@ -302,7 +308,12 @@ class GitLabDriver extends VcsDriver
         // we need to fetch the default branch from the api
         $resource = $this->getApiUrl();
         $this->project = JsonFile::parseJson($this->getContents($resource, true), $resource);
-        $this->isPrivate = $this->project['visibility'] !== 'public';
+        if (isset($this->project['visibility'])) {
+            $this->isPrivate = $this->project['visibility'] !== 'public';
+        } else {
+            // client is not authendicated, therefore repository has to be public
+            $this->isPrivate = false;
+        }
     }
 
     protected function attemptCloneFallback()
@@ -340,7 +351,7 @@ class GitLabDriver extends VcsDriver
 
     protected function generatePublicUrl()
     {
-        return 'https://' . $this->originUrl . '/'.$this->namespace.'/'.$this->repository.'.git';
+        return $this->scheme . '://' . $this->originUrl . '/'.$this->namespace.'/'.$this->repository.'.git';
     }
 
     protected function setupGitDriver($url)
