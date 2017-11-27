@@ -59,13 +59,20 @@ class PhpStanAnalyzer
 		$binDir = $this->getPhpStanBinDir($input);
 		$process = new Process($commandLine, $binDir);
 		$process->setTimeout(10);
-		$process->run();
+		$exitCode = $process->run();
 
-		$output = $process->getOutput();
-		$output = $this->clearPathFromOutput($output, dirname($binDir), '<PHPStan>');
-		$output = $this->clearPathFromOutput($output, " in $includedFilePath", '');
-		$output = $this->clearPathFromOutput($output, $resultDirPath, '');
-		$output = new AnalyzerOutput($input, $output);
+		if ($exitCode > 127) {
+			$processOutput = "PHP process crashed with exit code $exitCode\n";
+			$persist = FALSE;
+
+		} else {
+			$processOutput = $process->getOutput();
+			$processOutput = $this->clearPathFromOutput($processOutput, dirname($binDir), '<PHPStan>');
+			$processOutput = $this->clearPathFromOutput($processOutput, " in $includedFilePath", '');
+			$processOutput = $this->clearPathFromOutput($processOutput, $resultDirPath, '');
+		}
+
+		$output = new AnalyzerOutput($input, $processOutput);
 
 		if ($persist) {
 			$this->createInputFile($input, $inputFilePath);
