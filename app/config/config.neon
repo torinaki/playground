@@ -29,8 +29,12 @@ parameters:
 			- parameters
 
 		parameterKeysWhitelist:
+			- checkAlwaysTrueCheckTypeFunctionCall
+			- checkAlwaysTrueInstanceof
 			- checkArgumentsPassedByReference
+			- checkClassCaseSensitivity
 			- checkFunctionArgumentTypes
+			- checkMaybeUndefinedVariables
 			- checkNullables
 			- checkThisOnly
 			- checkUnionTypes
@@ -56,6 +60,8 @@ parameters:
 		'''
 		config: '''
 			parameters:
+				checkAlwaysTrueCheckTypeFunctionCall: false
+				checkAlwaysTrueInstanceof: false
 				polluteCatchScopeWithTryAssignments: false
 				polluteScopeWithLoopInitialAssignments: true
 				earlyTerminatingMethodCalls: []
