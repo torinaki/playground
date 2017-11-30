@@ -57,7 +57,7 @@ parameters:
 		config: '''
 			parameters:
 				polluteCatchScopeWithTryAssignments: false
-				polluteScopeWithLoopInitialAssignments: false
+				polluteScopeWithLoopInitialAssignments: true
 				earlyTerminatingMethodCalls: []
 				universalObjectCratesClasses: []
 				ignoreErrors: []
