@@ -23,7 +23,7 @@ class CodeSanitizer
 
 	public function sanitize(string $code): string
 	{
-		$allNodes = $this->parser->parse($code);
+		$allNodes = $this->parser->parse($code) ?? [];
 		$filteredNodes = $this->filterNodes($allNodes);
 		$filteredCode = $this->printer->prettyPrintFile($filteredNodes);
 

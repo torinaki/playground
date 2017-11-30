@@ -85,7 +85,7 @@ class PlaygroundFormFactory
 		}
 
 		$form->onAnchor[] = function () use ($versionSelect, $versionItems): void {
-			$shaHex = $versionSelect->getRawValue() ?? '';
+			$shaHex = (string) $versionSelect->getRawValue() ?? '';
 			$this->extendVersionItems($versionSelect, $versionItems, $shaHex);
 		};
 

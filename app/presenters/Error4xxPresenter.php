@@ -2,24 +2,30 @@
 
 namespace App\Presenters;
 
-use Nette;
+use Nette\Application\BadRequestException;
+use Nette\Application\UI;
 
 
-class Error4xxPresenter extends Nette\Application\UI\Presenter
+/**
+ * @property-read UI\ITemplate $template
+ */
+class Error4xxPresenter extends UI\Presenter
 {
-	public function startup()
+	public function renderDefault(BadRequestException $exception)
 	{
-		parent::startup();
-		if (!$this->getRequest()->isMethod(Nette\Application\Request::FORWARD)) {
-			$this->error();
+		$httpCode = $exception->getCode();
+
+		$files = [
+			__DIR__ . "/templates/Error/$httpCode.latte",
+			__DIR__ . '/templates/Error/4xx.latte',
+		];
+
+		foreach ($files as $file) {
+			if (is_file($file)) {
+				$this->template->setFile($file);
+			}
 		}
-	}
 
-
-	public function renderDefault(Nette\Application\BadRequestException $exception)
-	{
-		// load template 403.latte or 404.latte or ... 4xx.latte
-		$file = __DIR__ . "/templates/Error/{$exception->getCode()}.latte";
-		$this->template->setFile(is_file($file) ? $file : __DIR__ . '/templates/Error/4xx.latte');
+		$this->error();
 	}
 }

@@ -11,6 +11,9 @@ use Symfony\Component\Console\Style\StyleInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 
+/**
+ * @property-read UI\ITemplate $template
+ */
 class TerminalOutputControl extends UI\Control
 {
 	/** @var AnsiToHtmlConverter */

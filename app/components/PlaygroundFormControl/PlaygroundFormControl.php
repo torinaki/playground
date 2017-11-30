@@ -7,6 +7,9 @@ use App\Model\GitShaHex;
 use Nette\Application\UI;
 
 
+/**
+ * @property-read UI\ITemplate $template
+ */
 class PlaygroundFormControl extends UI\Control
 {
 	/** @var PlaygroundFormFactory */
