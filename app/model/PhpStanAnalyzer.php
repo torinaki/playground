@@ -59,6 +59,8 @@ class PhpStanAnalyzer
 		$binDir = $this->getPhpStanBinDir($input);
 		$process = new Process($commandLine, $binDir);
 		$process->setTimeout(10);
+		$process->setEnv(['COLUMNS' => '120']);
+		$process->inheritEnvironmentVariables();
 		$exitCode = $process->run();
 
 		if ($exitCode > 127) {
