@@ -10,7 +10,8 @@
 	"extra": {
 		"cleaner-ignore": {
 			"composer/composer": ["res"],
-			"composer/ca-bundle": ["res"]
+			"composer/ca-bundle": ["res"],
+			"phpstan/phpstan-nette": ["extension.neon"]
 		}
 	},
 	"require": {
@@ -34,5 +35,9 @@
 		"composer/semver": "~1.4",
 		"symfony/process": "~3.3",
 		"sensiolabs/ansi-to-html": "~1.1"
+	},
+	"require-dev": {
+		"phpstan/phpstan-shim": "~0.9",
+		"phpstan/phpstan-nette": "~0.9"
 	}
 }

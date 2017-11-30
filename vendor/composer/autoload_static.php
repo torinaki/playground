@@ -29,6 +29,7 @@ class ComposerStaticInit00ff5569f6af9f6db5a75ef15e3d9752
         array (
             'Psr\\Log\\' => 8,
             'PhpParser\\' => 10,
+            'PHPStan\\' => 8,
         ),
         'J' => 
         array (
@@ -87,6 +88,10 @@ class ComposerStaticInit00ff5569f6af9f6db5a75ef15e3d9752
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
+        ),
+        'PHPStan\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phpstan/phpstan-nette/src',
         ),
         'JsonSchema\\' => 
         array (
@@ -705,6 +710,17 @@ class ComposerStaticInit00ff5569f6af9f6db5a75ef15e3d9752
         'Nette\\Utils\\Strings' => __DIR__ . '/..' . '/nette/utils/src/Utils/Strings.php',
         'Nette\\Utils\\UnknownImageFileException' => __DIR__ . '/..' . '/nette/utils/src/Utils/exceptions.php',
         'Nette\\Utils\\Validators' => __DIR__ . '/..' . '/nette/utils/src/Utils/Validators.php',
+        'PHPStan\\Reflection\\Nette\\HtmlClassReflectionExtension' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Reflection/Nette/HtmlClassReflectionExtension.php',
+        'PHPStan\\Reflection\\Nette\\HtmlMethodReflection' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Reflection/Nette/HtmlMethodReflection.php',
+        'PHPStan\\Reflection\\Nette\\HtmlPropertyReflection' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Reflection/Nette/HtmlPropertyReflection.php',
+        'PHPStan\\Reflection\\Nette\\NetteObjectClassReflectionExtension' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Reflection/Nette/NetteObjectClassReflectionExtension.php',
+        'PHPStan\\Reflection\\Nette\\NetteObjectEventListenerMethodReflection' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Reflection/Nette/NetteObjectEventListenerMethodReflection.php',
+        'PHPStan\\Reflection\\Nette\\NetteObjectPropertyReflection' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Reflection/Nette/NetteObjectPropertyReflection.php',
+        'PHPStan\\Rule\\Nette\\DoNotExtendNetteObjectRule' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Rule/Nette/DoNotExtendNetteObjectRule.php',
+        'PHPStan\\Type\\Nette\\ComponentModelDynamicReturnTypeExtension' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Type/Nette/ComponentModelDynamicReturnTypeExtension.php',
+        'PHPStan\\Type\\Nette\\FormContainerValuesDynamicReturnTypeExtension' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Type/Nette/FormContainerValuesDynamicReturnTypeExtension.php',
+        'PHPStan\\Type\\Nette\\FormsBaseControlDynamicReturnTypeExtension' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Type/Nette/FormsBaseControlDynamicReturnTypeExtension.php',
+        'PHPStan\\Type\\Nette\\ServiceLocatorDynamicReturnTypeExtension' => __DIR__ . '/..' . '/phpstan/phpstan-nette/src/Type/Nette/ServiceLocatorDynamicReturnTypeExtension.php',
         'PhpParser\\Autoloader' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Autoloader.php',
         'PhpParser\\Builder' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Builder.php',
         'PhpParser\\BuilderAbstract' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/BuilderAbstract.php',
