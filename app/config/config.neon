@@ -42,7 +42,7 @@ parameters:
 			- universalObjectCratesClasses
 
 	playgroundFormDefaults:
-		level: 6
+		level: 7
 		phpCode: '''
 			<?php declare(strict_types = 1);
 
