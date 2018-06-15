@@ -12,15 +12,35 @@
 		border-bottom: 1px solid #e4e4e4;
 		margin-bottom: 20px;
 		padding: 0 10px;
+
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.playground-form .github-link {
+		flex-grow: 1;
+		color: #e4e4e4;
+		display: flex;
+		flex-direction: row;
+		align-items: center;
+		justify-content: flex-end;
+	}
+
+	.playground-form .github-link-image {
+		margin-left: 10px;
+		width: 36px;
+		vertical-align: middle;
 	}
 
 	.playground-form .middle {
 		display: flex;
+		flex-direction: column;
 	}
 
 	.playground-form .middle > .middle-column {
-		width: 50%;
 		margin: 10px;
+		flex: 1 0 auto;
 	}
 
 	.playground-form input,
@@ -43,13 +63,35 @@
 		font-size: 120%;
 		padding: 7px 20px;
 	}
+
+	@media screen and (min-width: 768px) {
+		.playground-form .top {
+			flex-direction: row;
+			align-items: center;
+		}
+	}
+
+	@media screen and (min-width: 990px) {
+		.playground-form .middle {
+			flex-direction: row;
+		}
+	}
 </style>
 
 <div class="playground-form">
 	<form n:name="form">
 		<div class="top">
-			<label>Level <input n:name="level"></label>
-			<label>Version <select n:name="version"></select></label>
+			<div>
+				<label>Level <input n:name="level"></label>
+			</div>
+			<div>
+				<label>Version <select n:name="version"></select></label>
+			</div>
+
+			<a class="github-link" href="https://github.com/phpstan/phpstan">
+				<span>Looking for phpstan project ? </span>
+				<img class="github-link-image" src="/github-mark.png" alt="Github project" />
+			</a>
 		</div>
 
 		<div class="middle">
