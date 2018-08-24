@@ -78,7 +78,7 @@ class PhpStanAnalyzer
 			$processOutput = sprintf(
 				"PHP process crashed with exit code %d: \n%s",
 				$exitCode,
-				$process->getOutput()
+				$processOutput = $this->clearPathFromOutput($process->getOutput(), " in $includedFilePath", '')
 			);
 			$persist = FALSE;
 
