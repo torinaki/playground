@@ -42,6 +42,7 @@ COPY ./www ./www/
 
 RUN composer warmup-opcode
 
+RUN chown -R www-data:www-data /usr/deploy/data
 RUN chown -R www-data:www-data /usr/deploy/temp
 RUN chown -R www-data:www-data /usr/deploy/log
 
