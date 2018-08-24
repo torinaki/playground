@@ -1,0 +1,16 @@
+version: "3"
+
+services:
+  nginx:
+    image: phpstan-playground-nginx
+    ports:
+      - 8082:80
+    volumes:
+      - ./:/usr/deploy
+    links:
+      - fpm
+
+  fpm:
+    image: phpstan-playground-fpm
+    volumes:
+      - ./:/usr/deploy
