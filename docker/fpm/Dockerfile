@@ -38,4 +38,6 @@ COPY ./www ./www/
 
 RUN composer warmup-opcode
 
+RUN chown -R www-data:www-data /usr/deploy
+
 EXPOSE 9000
