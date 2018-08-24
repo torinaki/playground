@@ -96,7 +96,7 @@ class PhpStanAnalyzer
 			$this->createOutputFile($output, $outputFilePath);
 
 		} else {
-			FileSystem::delete($resultDirPath);
+			FileSystem::delete($localPathPrefix);
 		}
 
 		return $output;
