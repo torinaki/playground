@@ -30,9 +30,11 @@ RUN echo -e \
 RUN mkdir temp
 RUN mkdir log
 
-COPY ./app ./
+COPY ./app ./app/
 
-COPY ./www ./
+COPY ./app/config/config.env.neon ./app/config/config.local.neon
+
+COPY ./www ./www/
 
 RUN composer warmup-opcode
 

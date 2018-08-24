@@ -8,6 +8,9 @@ return function (array $parameters = []) {
 	$configurator->enableTracy(__DIR__ . '/../log');
 	$configurator->setTimeZone('UTC');
 	$configurator->setTempDirectory(__DIR__ . '/../temp');
+	$configurator->addDynamicParameters([
+		'env' => $_ENV,
+	]);
 
 	$configurator->createRobotLoader()
 		->addDirectory(__DIR__)
