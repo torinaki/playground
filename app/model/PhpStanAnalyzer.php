@@ -19,32 +19,43 @@ class PhpStanAnalyzer
 	private $phpStanDir;
 
 	/** @var string */
-	private $dataDir;
+	private $localDataDir;
+
+	/** @var string */
+	private $remoteDataDir;
 
 
-	public function __construct(CodeSanitizer $codeSanitizer, string $phpBin, string $phpStanDir, string $dataDir)
+	public function __construct(
+		CodeSanitizer $codeSanitizer,
+		string $phpBin,
+		string $phpStanDir,
+		string $localDataDir,
+		string $remoteDataDir
+	)
 	{
 		$this->codeSanitizer = $codeSanitizer;
 		$this->phpBin = $phpBin;
 		$this->phpStanDir = $phpStanDir;
-		$this->dataDir = $dataDir;
+		$this->localDataDir = $localDataDir;
+		$this->remoteDataDir = $remoteDataDir;
 	}
 
 
 	public function analyze(AnalyzerInput $input, bool $persist): AnalyzerOutput
 	{
 		$inputHash = $input->getHash();
-		$resultDirPath = $this->getResultDirPath($inputHash);
-		$inputFilePath = $this->getInputFilePath($resultDirPath);
-		$outputFilePath = $this->getOutputFilePath($resultDirPath);
+		$remotePathPrefix = $this->getRemotePathPrefix($inputHash);
+		$inputFilePath = $this->getInputFilePath($remotePathPrefix);
+		$outputFilePath = $this->getOutputFilePath($remotePathPrefix);
 
 		if (is_file($outputFilePath)) {
 			return $this->fetchOutputFile($inputFilePath, $outputFilePath);
 		}
 
-		$includedFilePath = $this->createIncludedFile($input, $resultDirPath);
-		$configFilePath = $this->createConfigFile($input, $resultDirPath);
-		$analyzedFilePath = $this->createAnalyzedFile($input, $resultDirPath);
+		$localPathPrefix = $this->getLocalPathPrefix($inputHash);
+		$includedFilePath = $this->createIncludedFile($input, $localPathPrefix);
+		$configFilePath = $this->createConfigFile($input, $localPathPrefix);
+		$analyzedFilePath = $this->createAnalyzedFile($input, $localPathPrefix);
 
 		$commandLine = [
 			$this->phpBin, '-ddisplay_errors=1',
@@ -75,7 +86,7 @@ class PhpStanAnalyzer
 			$processOutput = $process->getOutput();
 			$processOutput = $this->clearPathFromOutput($processOutput, dirname($binDir), '<PHPStan>');
 			$processOutput = $this->clearPathFromOutput($processOutput, " in $includedFilePath", '');
-			$processOutput = $this->clearPathFromOutput($processOutput, $resultDirPath, '');
+			$processOutput = $this->clearPathFromOutput($processOutput, $localPathPrefix, '');
 		}
 
 		$output = new AnalyzerOutput($input, $processOutput);
@@ -94,8 +105,8 @@ class PhpStanAnalyzer
 
 	public function fetchInput(string $inputHash): ?AnalyzerInput
 	{
-		$resultDirPath = $this->getResultDirPath($inputHash);
-		$inputFilePath = $this->getInputFilePath($resultDirPath);
+		$remotePathPrefix = $this->getRemotePathPrefix($inputHash);
+		$inputFilePath = $this->getInputFilePath($remotePathPrefix);
 
 		return is_file($inputFilePath)
 			? $this->fetchInputFile($inputFilePath)
@@ -105,9 +116,9 @@ class PhpStanAnalyzer
 
 	public function fetchOutput(string $inputHash): ?AnalyzerOutput
 	{
-		$resultDirPath = $this->getResultDirPath($inputHash);
-		$inputFilePath = $this->getInputFilePath($resultDirPath);
-		$outputFilePath = $this->getOutputFilePath($resultDirPath);
+		$remotePathPrefix = $this->getRemotePathPrefix($inputHash);
+		$inputFilePath = $this->getInputFilePath($remotePathPrefix);
+		$outputFilePath = $this->getOutputFilePath($remotePathPrefix);
 
 		return is_file($outputFilePath)
 			? $this->fetchOutputFile($inputFilePath, $outputFilePath)
@@ -115,47 +126,52 @@ class PhpStanAnalyzer
 	}
 
 
-	private function getResultDirPath(string $inputHash): string
+	private function getLocalPathPrefix(string $inputHash): string
 	{
 		$inputHashPrefix = substr($inputHash, 0, 2);
-		return "{$this->dataDir}/results/{$inputHashPrefix}/{$inputHash}";
+		return "{$this->localDataDir}/results/{$inputHashPrefix}/{$inputHash}";
 	}
 
-
-	private function getInputFilePath(string $resultDirPath): string
+	private function getRemotePathPrefix(string $inputHash): string
 	{
-		return "$resultDirPath/input.json";
+		$inputHashPrefix = substr($inputHash, 0, 2);
+		return "{$this->remoteDataDir}/results/{$inputHashPrefix}/{$inputHash}";
 	}
 
-
-	private function getOutputFilePath(string $resultDirPath): string
+	private function getInputFilePath(string $remotePathPrefix): string
 	{
-		return "$resultDirPath/output.json";
+		return "$remotePathPrefix/input.json";
 	}
 
 
-	private function createIncludedFile(AnalyzerInput $input, string $resultDirPath): string
+	private function getOutputFilePath(string $remotePathPrefix): string
+	{
+		return "$remotePathPrefix/output.json";
+	}
+
+
+	private function createIncludedFile(AnalyzerInput $input, string $localPathPrefix): string
 	{
 		$sanitizedCode = $this->codeSanitizer->sanitize($input->getPhpCode());
-		$includedFilePath = "$resultDirPath/included.php";
+		$includedFilePath = "$localPathPrefix/included.php";
 		FileSystem::write($includedFilePath, $sanitizedCode);
 
 		return realpath($includedFilePath);
 	}
 
 
-	private function createConfigFile(AnalyzerInput $input, string $resultDirPath): string
+	private function createConfigFile(AnalyzerInput $input, string $localPathPrefix): string
 	{
-		$configFilePath = "$resultDirPath/config.neon";
+		$configFilePath = "$localPathPrefix/config.neon";
 		FileSystem::write($configFilePath, $input->getConfig());
 
 		return realpath($configFilePath);
 	}
 
 
-	private function createAnalyzedFile(AnalyzerInput $input, string $resultDirPath): string
+	private function createAnalyzedFile(AnalyzerInput $input, string $localPathPrefix): string
 	{
-		$analyzedFilePath = "$resultDirPath/analyzed.php";
+		$analyzedFilePath = "$localPathPrefix/analyzed.php";
 		FileSystem::write($analyzedFilePath, $input->getPhpCode());
 
 		return realpath($analyzedFilePath);
@@ -181,8 +197,7 @@ class PhpStanAnalyzer
 
 		$encodedInput = Json::encode($decodedInput, Json::PRETTY);
 
-		FileSystem::write("$inputFilePath.tmp", $encodedInput);
-		FileSystem::rename("$inputFilePath.tmp", $inputFilePath);
+		file_put_contents($inputFilePath, $encodedInput);
 
 		return $inputFilePath;
 	}
@@ -190,7 +205,7 @@ class PhpStanAnalyzer
 
 	private function fetchInputFile(string $inputFilePath): AnalyzerInput
 	{
-		$encodedInput = FileSystem::read($inputFilePath);
+		$encodedInput = file_get_contents($inputFilePath);
 		$decodedInput = Json::decode($encodedInput);
 
 		$input = new AnalyzerInput(
@@ -212,8 +227,7 @@ class PhpStanAnalyzer
 
 		$encodedOutput = Json::encode($decodedOutput, Json::PRETTY);
 
-		FileSystem::write("$outputFilePath.tmp", $encodedOutput);
-		FileSystem::rename("$outputFilePath.tmp", $outputFilePath);
+		file_put_contents($outputFilePath, $encodedOutput);
 
 		return $outputFilePath;
 	}
@@ -221,7 +235,7 @@ class PhpStanAnalyzer
 
 	private function fetchOutputFile(string $inputFilePath, string $outputFilePath): AnalyzerOutput
 	{
-		$encodedOutput = FileSystem::read($outputFilePath);
+		$encodedOutput = file_get_contents($outputFilePath);
 		$decodedOutput = Json::decode($encodedOutput);
 
 		$input = $this->fetchInputFile($inputFilePath);

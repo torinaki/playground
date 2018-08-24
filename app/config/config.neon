@@ -1,8 +1,13 @@
 parameters:
 	phpBin: php
 	phpStanDir: %appDir%/../phpstan
-	dataDir: %appDir%/../data
+	localDataDir: %appDir%/../data
+	remoteDataDir: %appDir%/../data
 	downloadsDir: %tempDir%/downloads
+	aws:
+		version: latest
+		region: eu-west-1
+		credentials: Aws\Credentials\Credentials(%awsAccessKey%, %awsSecretKey%)
 
 	versions:
 		labelsBlacklist:
@@ -79,8 +84,8 @@ nette.application:
 services:
 	# app model
 	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%)
-	- App\Model\PhpStanVersions(dataDir: %dataDir%, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
-	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%, dataDir: %dataDir%)
+	- App\Model\PhpStanVersions(dataDir: %remoteDataDir%, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
+	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%, localDataDir: %localDataDir%, remoteDataDir: %remoteDataDir%)
 	- App\Model\CodeSanitizer
 	- App\Model\CodeValidator
 	- App\Model\ConfigValidator(topLevelKeysWhitelist: %config.topLevelKeysWhitelist%, parameterKeysWhitelist: %config.parameterKeysWhitelist%)
@@ -109,3 +114,9 @@ services:
 	# sensiolabs/ansi-to-html
 	- SensioLabs\AnsiConverter\Theme\SolarizedXTermTheme
 	- SensioLabs\AnsiConverter\AnsiToHtmlConverter
+
+	# AWS SDK
+	-
+		class: Aws\S3\S3Client
+		arguments:
+			args: %aws%
