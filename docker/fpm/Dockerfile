@@ -46,4 +46,6 @@ RUN chown -R www-data:www-data /usr/deploy/data
 RUN chown -R www-data:www-data /usr/deploy/temp
 RUN chown -R www-data:www-data /usr/deploy/log
 
+VOLUME /usr/deploy
+
 EXPOSE 9000
