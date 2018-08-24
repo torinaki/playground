@@ -64,7 +64,11 @@ class PhpStanAnalyzer
 		$exitCode = $process->run();
 
 		if ($exitCode > 127) {
-			$processOutput = "PHP process crashed with exit code $exitCode\n";
+			$processOutput = sprintf(
+				"PHP process crashed with exit code %d: \n%s",
+				$exitCode,
+				$process->getOutput()
+			);
 			$persist = FALSE;
 
 		} else {
