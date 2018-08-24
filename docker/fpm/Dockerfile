@@ -32,12 +32,17 @@ RUN mkdir log
 
 COPY ./app ./app/
 
+COPY ./data/versions.json ./data/versions.json
+
+COPY ./phpstan ./phpstan/
+
 COPY ./app/config/config.env.neon ./app/config/config.local.neon
 
 COPY ./www ./www/
 
 RUN composer warmup-opcode
 
-RUN chown -R www-data:www-data /usr/deploy
+RUN chown -R www-data:www-data /usr/deploy/temp
+RUN chown -R www-data:www-data /usr/deploy/log
 
 EXPOSE 9000
