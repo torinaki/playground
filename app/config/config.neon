@@ -88,7 +88,7 @@ nette.application:
 services:
 	# app model
 	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%)
-	- App\Model\PhpStanVersions(dataDir: %remoteDataDir%, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
+	- App\Model\PhpStanVersions(dataDir: %localDataDir%, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
 	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%, localDataDir: %localDataDir%, remoteDataDir: %remoteDataDir%)
 	- App\Model\CodeSanitizer
 	- App\Model\CodeValidator
