@@ -1,16 +1,19 @@
-version: "3"
+version: "2"
 
 services:
   nginx:
     image: phpstan-playground-nginx
     ports:
       - 8082:80
-    volumes:
-      - ./:/usr/deploy
     links:
       - fpm
+    volumes_from:
+      - fpm:ro
 
   fpm:
     image: phpstan-playground-fpm
     volumes:
       - ./:/usr/deploy
+    environment:
+      - AWS_ACCESS_KEY
+      - AWS_SECRET_KEY
