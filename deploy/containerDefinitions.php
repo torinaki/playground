@@ -8,12 +8,12 @@ echo json_encode([
 		'image' => $_SERVER['FPM_DOCKER_TAG'],
 		'environment' => [
 			[
-				'name' => 'AWS_ACCESS_KEY',
-				'value' => $_SERVER['AWS_ACCESS_KEY'],
+				'name' => 'AWS_ACCESS_KEY_ID',
+				'value' => $_SERVER['AWS_ACCESS_KEY_ID'],
 			],
 			[
-				'name' => 'AWS_SECRET_KEY',
-				'value' => $_SERVER['AWS_SECRET_KEY'],
+				'name' => 'AWS_SECRET_ACCESS_KEY',
+				'value' => $_SERVER['AWS_SECRET_ACCESS_KEY'],
 			],
 		],
 	],
