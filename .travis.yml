@@ -1,6 +1,4 @@
-language: php
-php:
-  - 7.2
+language: generic
 
 script:
   - pip install --user awscli
