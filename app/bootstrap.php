@@ -5,6 +5,9 @@ require __DIR__ . '/../vendor/autoload.php';
 return function (array $parameters = []) {
 	$configurator = new Nette\Configurator();
 	$configurator->addParameters($parameters);
+	if (isset($_ENV['DEVELOPMENT']) && $_ENV['DEVELOPMENT']) {
+		$configurator->setDebugMode(true);
+	}
 	$configurator->enableTracy(__DIR__ . '/../log');
 	$configurator->setTimeZone('UTC');
 	$configurator->setTempDirectory(__DIR__ . '/../temp');
