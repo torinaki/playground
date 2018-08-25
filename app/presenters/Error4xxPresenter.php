@@ -11,6 +11,14 @@ use Nette\Application\UI;
  */
 class Error4xxPresenter extends UI\Presenter
 {
+	public function startup(): void
+	{
+		parent::startup();
+		if (!$this->getRequest()->isMethod(\Nette\Application\Request::FORWARD)) {
+			$this->error();
+		}
+	}
+
 	public function renderDefault(BadRequestException $exception)
 	{
 		$httpCode = $exception->getCode();
@@ -23,9 +31,8 @@ class Error4xxPresenter extends UI\Presenter
 		foreach ($files as $file) {
 			if (is_file($file)) {
 				$this->template->setFile($file);
+				break;
 			}
 		}
-
-		$this->error();
 	}
 }
