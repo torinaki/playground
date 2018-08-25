@@ -13,6 +13,7 @@ COPY ["./composer.json", "./composer.lock", "./"]
 
 RUN echo -e \
 	"zend_extension=opcache.so\n" \
+	"opcache.enable=0\n" \
 	"opcache.enable_cli=1\n" \
 	"opcache.memory_consumption=128\n" \
 	"opcache.validate_timestamps=0\n" \
@@ -39,6 +40,10 @@ COPY ./phpstan ./phpstan/
 COPY ./app/config/config.env.neon ./app/config/config.local.neon
 
 COPY ./www ./www/
+
+ARG GIT_COMMIT_HASH
+
+RUN echo $GIT_COMMIT_HASH > .gitcommit
 
 RUN composer warmup-opcode
 
