@@ -27,7 +27,6 @@ return function (array $parameters = []) {
 		'nette.http.session' => [Nette\Bridges\HttpDI\SessionExtension::class, ['%debugMode%', '%consoleMode%']],
 		'latte' => [Nette\Bridges\ApplicationDI\LatteExtension::class, ['%tempDir%/cache/latte', '%debugMode%']],
 		'tracy' => [Tracy\Bridges\Nette\TracyExtension::class, ['%debugMode%', '%consoleMode%']],
-		'inject' => Nette\DI\Extensions\InjectExtension::class,
 	];
 
 	$configurator->addConfig(__DIR__ . '/config/config.neon');
