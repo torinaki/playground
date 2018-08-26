@@ -22,6 +22,7 @@ return function (array $parameters = []) {
 	$configurator->defaultExtensions = [
 		'extensions' => Nette\DI\Extensions\ExtensionsExtension::class,
 		'nette.application' => [Nette\Bridges\ApplicationDI\ApplicationExtension::class, ['%debugMode%', ['%appDir%'], '%tempDir%/cache']],
+		'nette.routing' => [\Nette\Bridges\ApplicationDI\RoutingExtension::class, ['%debugMode%']],
 		'nette.http' => [Nette\Bridges\HttpDI\HttpExtension::class, ['%consoleMode%']],
 		'nette.http.session' => [Nette\Bridges\HttpDI\SessionExtension::class, ['%debugMode%', '%consoleMode%']],
 		'latte' => [Nette\Bridges\ApplicationDI\LatteExtension::class, ['%tempDir%/cache/latte', '%debugMode%']],

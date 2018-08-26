@@ -84,6 +84,11 @@ nette.application:
 	mapping:
 		*: App\*Module\Presenters\*Presenter
 
+nette.routing:
+	routes:
+		'[r/<inputHash>]': 'Playground:default'
+		'r/<inputHash>/input': 'Api:showInput'
+		'service/<action>': ['presenter' => 'Service']
 
 services:
 	# app model
@@ -99,10 +104,6 @@ services:
 	- App\Components\PlaygroundFormFactory(defaults: %playgroundFormDefaults%)
 	- App\Components\PlaygroundFormControlFactory
 	- App\Components\TerminalOutputControlFactory
-
-
-	# nette/application
-	- App\RouterFactory::createRouter()
 
 
 	# milo/github-api
