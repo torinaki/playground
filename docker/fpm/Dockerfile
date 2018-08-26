@@ -43,7 +43,7 @@ COPY ./app ./app/
 
 RUN composer dump-autoload --optimize --no-dev --no-interaction \
 	&& composer global require jderusse/composer-warmup --prefer-dist --no-progress --no-interaction \
-	&& composer warmup-opcode \
+	&& composer warmup-opcode app \
 	&& chown -R www-data:www-data /usr/deploy/data \
 	&& chown -R www-data:www-data /usr/deploy/temp \
 	&& chown -R www-data:www-data /usr/deploy/log
