@@ -1,10 +1,8 @@
 FROM php:7.2.8-fpm-alpine
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
-ARG GIT_COMMIT_HASH
 
 RUN set -xe \
-	&& echo $GIT_COMMIT_HASH > .gitcommit \
 	&& apk --update --no-cache add curl \
 	&& docker-php-ext-install sockets \
 	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
@@ -47,6 +45,10 @@ RUN composer dump-autoload --optimize --no-dev --no-interaction \
 	&& chown -R www-data:www-data /usr/deploy/data \
 	&& chown -R www-data:www-data /usr/deploy/temp \
 	&& chown -R www-data:www-data /usr/deploy/log
+
+ARG GIT_COMMIT_HASH
+
+RUN echo $GIT_COMMIT_HASH > .gitcommit
 
 VOLUME /usr/deploy
 
