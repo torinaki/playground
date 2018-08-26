@@ -19,10 +19,6 @@ return function (array $parameters = []) {
 		'env' => $_ENV,
 	]);
 
-	$configurator->createRobotLoader()
-		->addDirectory(__DIR__)
-		->register();
-
 	$configurator->defaultExtensions = [
 		'extensions' => Nette\DI\Extensions\ExtensionsExtension::class,
 		'nette.application' => [Nette\Bridges\ApplicationDI\ApplicationExtension::class, ['%debugMode%', ['%appDir%'], '%tempDir%/cache']],

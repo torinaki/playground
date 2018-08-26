@@ -41,5 +41,12 @@
 	"require-dev": {
 		"phpstan/phpstan-shim": "~0.9",
 		"phpstan/phpstan-nette": "~0.9"
+	},
+	"autoload": {
+		"psr-4": {
+			"App\\": [
+				"app/"
+			]
+		}
 	}
 }
