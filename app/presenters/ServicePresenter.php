@@ -3,9 +3,10 @@
 namespace App\Presenters;
 
 use Nette\Application\BadRequestException;
-use Nette\Application\Request;
+use Nette\Application\UI\Presenter;
+use function phpinfo;
 
-class OpcachePresenter implements \Nette\Application\IPresenter
+class ServicePresenter extends Presenter
 {
 
 	/** @var bool */
@@ -13,10 +14,17 @@ class OpcachePresenter implements \Nette\Application\IPresenter
 
 	public function __construct(bool $devMode)
 	{
+		parent::__construct();
 		$this->devMode = $devMode;
 	}
 
-	public function run(Request $request)
+	public function actionPhpInfo()
+	{
+		phpinfo();
+		$this->terminate();
+	}
+
+	public function actionOpcache()
 	{
 		if (!$this->devMode) {
 			throw new BadRequestException();
@@ -25,6 +33,7 @@ class OpcachePresenter implements \Nette\Application\IPresenter
 		error_reporting(0);
 
 		require __DIR__ . '/../../vendor/carlosio/opcache-dashboard/opcache.php';
+		$this->terminate();
 	}
 
 }
