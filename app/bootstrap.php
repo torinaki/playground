@@ -5,10 +5,15 @@ require __DIR__ . '/../vendor/autoload.php';
 return function (array $parameters = []) {
 	$configurator = new Nette\Configurator();
 	$configurator->addParameters($parameters);
-	if (isset($_ENV['DEVELOPMENT']) && $_ENV['DEVELOPMENT']) {
-		$configurator->setDebugMode(true);
-	}
-	$configurator->enableTracy(__DIR__ . '/../log');
+	$debugMode = isset($_ENV['DEVELOPMENT']) && $_ENV['DEVELOPMENT'];
+	$configurator->setDebugMode($debugMode);
+	Tracy\Debugger::$strictMode = true;
+	Tracy\Debugger::$logSeverity = E_ALL;
+	Tracy\Debugger::enable(
+		!($debugMode || (isset($_COOKIE['debug']) && $_COOKIE['debug'] === $_ENV['DEBUG_COOKIE'])),
+		__DIR__ . '/../log'
+	);
+	Nette\Bridges\Framework\TracyBridge::initialize();
 	$configurator->setTimeZone('UTC');
 	$configurator->setTempDirectory(__DIR__ . '/../temp');
 	$configurator->addDynamicParameters([

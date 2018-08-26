@@ -15,6 +15,10 @@ echo json_encode([
 				'name' => 'AWS_SECRET_ACCESS_KEY',
 				'value' => $_SERVER['AWS_SECRET_ACCESS_KEY'],
 			],
+			[
+				'name' => 'DEBUG_COOKIE',
+				'value' => $_SERVER['DEBUG_COOKIE'],
+			],
 		],
 	],
 	[
