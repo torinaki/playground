@@ -13,7 +13,7 @@ COPY ["./composer.json", "./composer.lock", "./"]
 
 RUN echo -e \
 	"zend_extension=opcache.so\n" \
-	"opcache.enable=0\n" \
+	"opcache.enable=1\n" \
 	"opcache.enable_cli=1\n" \
 	"opcache.memory_consumption=128\n" \
 	"opcache.validate_timestamps=0\n" \
