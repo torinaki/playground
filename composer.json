@@ -35,7 +35,8 @@
 		"composer/semver": "^1.4",
 		"symfony/process": "^3.3",
 		"sensiolabs/ansi-to-html": "^1.1",
-		"aws/aws-sdk-php": "^3.66"
+		"aws/aws-sdk-php": "^3.66",
+		"carlosio/opcache-dashboard": "^1.0"
 	},
 	"require-dev": {
 		"phpstan/phpstan-shim": "~0.9",

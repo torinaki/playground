@@ -1,0 +1,5 @@
+services:
+	-
+		class: App\Presenters\OpcachePresenter
+		arguments:
+			devMode: %devMode%

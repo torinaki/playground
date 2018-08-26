@@ -6,17 +6,16 @@ return function (array $parameters = []) {
 	$configurator = new Nette\Configurator();
 	$configurator->addParameters($parameters);
 	$debugMode = isset($_ENV['DEVELOPMENT']) && $_ENV['DEVELOPMENT'];
+	$devMode = $debugMode || (isset($_COOKIE['debug']) && $_COOKIE['debug'] === $_ENV['DEBUG_COOKIE']);
 	$configurator->setDebugMode($debugMode);
 	Tracy\Debugger::$strictMode = true;
 	Tracy\Debugger::$logSeverity = E_ALL;
-	Tracy\Debugger::enable(
-		!($debugMode || (isset($_COOKIE['debug']) && $_COOKIE['debug'] === $_ENV['DEBUG_COOKIE'])),
-		__DIR__ . '/../log'
-	);
+	Tracy\Debugger::enable(!$devMode, __DIR__ . '/../log');
 	Nette\Bridges\Framework\TracyBridge::initialize();
 	$configurator->setTimeZone('UTC');
 	$configurator->setTempDirectory(__DIR__ . '/../temp');
 	$configurator->addDynamicParameters([
+		'devMode' => $devMode,
 		'env' => $_ENV,
 	]);
 
@@ -35,6 +34,8 @@ return function (array $parameters = []) {
 	];
 
 	$configurator->addConfig(__DIR__ . '/config/config.neon');
+	$configurator->addConfig(__DIR__ . '/config/presenters.neon');
+
 	$configurator->addConfig(__DIR__ . '/config/config.local.neon');
 
 	$container = $configurator->createContainer();

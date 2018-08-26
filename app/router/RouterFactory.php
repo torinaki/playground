@@ -14,6 +14,7 @@ class RouterFactory
 		$routeList = new RouteList();
 		$routeList[] = new Route('[r/<inputHash>]', 'Playground:default');
 		$routeList[] = new Route('r/<inputHash>/input', 'Api:showInput');
+		$routeList[] = new Route('opcache', 'Opcache:default');
 
 		return $routeList;
 	}
