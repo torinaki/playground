@@ -21,12 +21,12 @@ return function (array $parameters = []) {
 
 	$configurator->defaultExtensions = [
 		'extensions' => Nette\DI\Extensions\ExtensionsExtension::class,
-		'nette.application' => [Nette\Bridges\ApplicationDI\ApplicationExtension::class, ['%debugMode%', ['%appDir%'], '%tempDir%/cache']],
-		'nette.routing' => [\Nette\Bridges\ApplicationDI\RoutingExtension::class, ['%debugMode%']],
+		'nette.application' => [Nette\Bridges\ApplicationDI\ApplicationExtension::class, ['%devMode%', [], '%tempDir%/cache']],
+		'nette.routing' => [\Nette\Bridges\ApplicationDI\RoutingExtension::class, ['%devMode%']],
 		'nette.http' => [Nette\Bridges\HttpDI\HttpExtension::class, ['%consoleMode%']],
-		'nette.http.session' => [Nette\Bridges\HttpDI\SessionExtension::class, ['%debugMode%', '%consoleMode%']],
-		'latte' => [Nette\Bridges\ApplicationDI\LatteExtension::class, ['%tempDir%/cache/latte', '%debugMode%']],
-		'tracy' => [Tracy\Bridges\Nette\TracyExtension::class, ['%debugMode%', '%consoleMode%']],
+		'nette.http.session' => [Nette\Bridges\HttpDI\SessionExtension::class, ['%devMode%', '%consoleMode%']],
+		'latte' => [Nette\Bridges\ApplicationDI\LatteExtension::class, ['%tempDir%/cache/latte', '%devMode%']],
+		'tracy' => [Tracy\Bridges\Nette\TracyExtension::class, ['%devMode%', '%consoleMode%']],
 		'inject' => Nette\DI\Extensions\InjectExtension::class,
 	];
 
