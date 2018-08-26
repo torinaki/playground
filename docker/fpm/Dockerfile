@@ -1,8 +1,10 @@
 FROM php:7.2.8-fpm-alpine
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
+ARG GIT_COMMIT_HASH
 
 RUN set -xe \
+	&& echo $GIT_COMMIT_HASH > .gitcommit \
 	&& apk --update --no-cache add curl \
 	&& docker-php-ext-install sockets \
 	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
@@ -23,15 +25,11 @@ RUN echo -e \
 	"opcache.file_cache_only=0\n" \
 	"opcache.file_update_protection=0\n" > /usr/local/etc/php/conf.d/10-opcache.ini \
 	&& mkdir /tmp/opcache \
-		&& composer install --prefer-dist --no-progress --optimize-autoloader --no-interaction --no-dev \
-		&& composer global require jderusse/composer-warmup --prefer-dist --no-progress --optimize-autoloader --no-interaction \
+		&& mkdir temp \
+		&& mkdir log \
+		&& composer install --prefer-dist --no-progress --no-interaction --no-dev --no-autoloader \
 		&& composer clear-cache \
 		&& chmod 777 -R /tmp/opcache
-
-RUN mkdir temp
-RUN mkdir log
-
-COPY ./app ./app/
 
 COPY ./data/versions.json ./data/versions.json
 
@@ -41,15 +39,14 @@ COPY ./app/config/config.env.neon ./app/config/config.local.neon
 
 COPY ./www ./www/
 
-ARG GIT_COMMIT_HASH
+COPY ./app ./app/
 
-RUN echo $GIT_COMMIT_HASH > .gitcommit
-
-RUN composer warmup-opcode
-
-RUN chown -R www-data:www-data /usr/deploy/data
-RUN chown -R www-data:www-data /usr/deploy/temp
-RUN chown -R www-data:www-data /usr/deploy/log
+RUN composer dump-autoload --optimize --no-dev --no-interaction \
+	&& composer global require jderusse/composer-warmup --prefer-dist --no-progress --no-interaction \
+	&& composer warmup-opcode \
+	&& chown -R www-data:www-data /usr/deploy/data \
+	&& chown -R www-data:www-data /usr/deploy/temp \
+	&& chown -R www-data:www-data /usr/deploy/log
 
 VOLUME /usr/deploy
 
