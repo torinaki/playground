@@ -4,7 +4,7 @@ declare(strict_types = 1);
 echo json_encode([
 	[
 		'name' => 'fpm',
-		'memoryReservation' => 128,
+		'memoryReservation' => 32,
 		'image' => $_SERVER['FPM_DOCKER_TAG'],
 		'environment' => [
 			[
@@ -23,7 +23,7 @@ echo json_encode([
 	],
 	[
 		'name' => 'nginx',
-		'memoryReservation' => 128,
+		'memoryReservation' => 32,
 		'image' => $_SERVER['NGINX_DOCKER_TAG'],
 		'portMappings' => [
 			[

@@ -6,7 +6,7 @@ set -o nounset
 
 export GIT_COMMIT_HASH=$(git log -1 --format="%H")
 export TASK_FAMILY=phpstan-playground
-export CLUSTER='arn:aws:ecs:eu-west-1:928192134594:cluster/phpstan'
+export CLUSTER='arn:aws:ecs:eu-west-1:928192134594:cluster/phpstan-spot2'
 
 export FPM_IMAGE_NAME=phpstan-playground-fpm
 export NGINX_IMAGE_NAME=phpstan-playground-nginx
