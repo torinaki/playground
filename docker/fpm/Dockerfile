@@ -39,6 +39,8 @@ COPY ./www ./www/
 
 COPY ./app ./app/
 
+COPY ./bin ./bin/
+
 RUN composer dump-autoload --optimize --no-dev --no-interaction \
 	&& composer global require jderusse/composer-warmup --prefer-dist --no-progress --no-interaction \
 	&& composer warmup-opcode app \
