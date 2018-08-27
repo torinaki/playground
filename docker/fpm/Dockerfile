@@ -53,3 +53,6 @@ RUN echo $GIT_COMMIT_HASH > .gitcommit
 VOLUME /usr/deploy
 
 EXPOSE 9000
+
+# emptying CMD from the fpm image
+CMD []

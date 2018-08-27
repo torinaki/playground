@@ -19,3 +19,4 @@ services:
       - AWS_SECRET_ACCESS_KEY
       - DEVELOPMENT
       - DEBUG_COOKIE
+    command: ["php-fpm"]

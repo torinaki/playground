@@ -125,3 +125,15 @@ services:
 		class: Aws\S3\S3Client
 		arguments:
 			args: %aws%
+
+	# CLI
+	-
+		class: Symfony\Component\Console\Application
+		setup:
+			- setCatchExceptions(%productionMode%)
+			- add(@App\Commands\RefreshVersionsCommand)
+			- add(@App\Commands\SleepCommand)
+	-
+		class: App\Commands\RefreshVersionsCommand
+	-
+		class: App\Commands\SleepCommand
