@@ -1,5 +1,8 @@
 language: generic
 
+services:
+  - docker
+
 script:
   - pip install --user awscli
   - export PATH=$PATH:$HOME/.local/bin
