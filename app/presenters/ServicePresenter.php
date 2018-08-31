@@ -18,6 +18,14 @@ class ServicePresenter extends Presenter
 		$this->devMode = $devMode;
 	}
 
+	protected function startup()
+	{
+		parent::startup();
+		if (!$this->devMode) {
+			throw new BadRequestException();
+		}
+	}
+
 	public function actionPhpInfo()
 	{
 		phpinfo();
@@ -26,10 +34,6 @@ class ServicePresenter extends Presenter
 
 	public function actionOpcache()
 	{
-		if (!$this->devMode) {
-			throw new BadRequestException();
-		}
-
 		error_reporting(0);
 
 		require __DIR__ . '/../../vendor/carlosio/opcache-dashboard/opcache.php';
