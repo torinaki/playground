@@ -3,8 +3,8 @@ FROM php:7.2.8-fpm-alpine
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN set -xe \
-	&& apk --update --no-cache add curl \
-	&& docker-php-ext-install sockets \
+	&& apk --update --no-cache add curl zlib-dev \
+	&& docker-php-ext-install sockets zip \
 	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
 WORKDIR /usr/deploy
@@ -26,6 +26,7 @@ RUN echo -e \
 		&& mkdir data \
 		&& mkdir temp \
 		&& mkdir log \
+		&& mkdir phpstan \
 		&& composer install --prefer-dist --no-progress --no-interaction --no-dev --no-autoloader \
 		&& composer clear-cache \
 		&& chmod 777 -R /tmp/opcache
@@ -43,7 +44,8 @@ RUN composer dump-autoload --optimize --no-dev --no-interaction \
 	&& composer warmup-opcode app \
 	&& chown -R www-data:www-data /usr/deploy/data \
 	&& chown -R www-data:www-data /usr/deploy/temp \
-	&& chown -R www-data:www-data /usr/deploy/log
+	&& chown -R www-data:www-data /usr/deploy/log \
+	&& chown -R www-data:www-data /usr/deploy/phpstan
 
 ARG GIT_COMMIT_HASH
 
@@ -52,6 +54,8 @@ RUN echo $GIT_COMMIT_HASH > .gitcommit
 VOLUME /usr/deploy
 
 EXPOSE 9000
+
+USER www-data:www-data
 
 # emptying CMD from the fpm image
 CMD []
