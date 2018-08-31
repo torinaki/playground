@@ -38,11 +38,11 @@ echo Updating task and cluster definitions:
 
 SERVICE_CONTAINER_DEFINITIONS=$(php deploy/serviceContainerDefinitions.php)
 VOLUME_DEFINITIONS=$(php deploy/volumeDefinitions.php)
-SERVICE_TASK_REVISION=$(aws ecs register-task-definition --family ${TASK_FAMILY_SERVICE} --container-definitions ${SERVICE_CONTAINER_DEFINITIONS} --volumes ${VOLUME_DEFINITIONS} --requires-compatibilities EC2 | php -r "echo json_decode(file_get_contents('php://stdin'))->taskDefinition->revision;")
+SERVICE_TASK_REVISION=$(aws ecs register-task-definition --region eu-west-1 --family ${TASK_FAMILY_SERVICE} --container-definitions ${SERVICE_CONTAINER_DEFINITIONS} --volumes ${VOLUME_DEFINITIONS} --requires-compatibilities EC2 | php -r "echo json_decode(file_get_contents('php://stdin'))->taskDefinition->revision;")
 
-aws ecs update-service --cluster ${CLUSTER} --service ${TASK_FAMILY_SERVICE} --task-definition ${TASK_FAMILY_SERVICE}:${SERVICE_TASK_REVISION} > /dev/null
+aws ecs update-service --cluster ${CLUSTER} --region eu-west-1 --service ${TASK_FAMILY_SERVICE} --task-definition ${TASK_FAMILY_SERVICE}:${SERVICE_TASK_REVISION} > /dev/null
 
 TASK_CONTAINER_DEFINITIONS=$(php deploy/taskContainerDefinitions.php)
-aws ecs register-task-definition --family ${TASK_FAMILY_TASK} --container-definitions ${TASK_CONTAINER_DEFINITIONS} --volumes ${VOLUME_DEFINITIONS} --requires-compatibilities EC2  > /dev/null
+aws ecs register-task-definition --region eu-west-1 --family ${TASK_FAMILY_TASK} --container-definitions ${TASK_CONTAINER_DEFINITIONS} --volumes ${VOLUME_DEFINITIONS} --requires-compatibilities EC2  > /dev/null
 
 echo Success! Deployed ${TASK_FAMILY_SERVICE}:${SERVICE_TASK_REVISION} \(${GIT_COMMIT_HASH}\)
