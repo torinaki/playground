@@ -19,6 +19,9 @@ class PhpStanAnalyzer
 	private $phpStanDir;
 
 	/** @var string */
+	private $phpStanCacheDir;
+
+	/** @var string */
 	private $localDataDir;
 
 	/** @var string */
@@ -29,6 +32,7 @@ class PhpStanAnalyzer
 		CodeSanitizer $codeSanitizer,
 		string $phpBin,
 		string $phpStanDir,
+		string $phpStanCacheDir,
 		string $localDataDir,
 		string $remoteDataDir
 	)
@@ -36,6 +40,7 @@ class PhpStanAnalyzer
 		$this->codeSanitizer = $codeSanitizer;
 		$this->phpBin = $phpBin;
 		$this->phpStanDir = $phpStanDir;
+		$this->phpStanCacheDir = $phpStanCacheDir;
 		$this->localDataDir = $localDataDir;
 		$this->remoteDataDir = $remoteDataDir;
 	}
@@ -59,7 +64,7 @@ class PhpStanAnalyzer
 
 		$commandLine = [
 			$this->phpBin, '-ddisplay_errors=1',
-			'phpstan', '--ansi', 'analyze',
+			'bin/phpstan', '--ansi', 'analyze',
 			'--no-progress',
 			'--level', $input->getLevel(),
 			'--autoload-file', $includedFilePath,
@@ -67,7 +72,7 @@ class PhpStanAnalyzer
 			$analyzedFilePath,
 		];
 
-		$binDir = $this->getPhpStanBinDir($input);
+		$binDir = $this->getPhpStanDir($input);
 		$process = new Process($commandLine, $binDir);
 		$process->setTimeout(10);
 		$process->setEnv(['COLUMNS' => '120']);
@@ -178,11 +183,18 @@ class PhpStanAnalyzer
 	}
 
 
-	private function getPhpStanBinDir(AnalyzerInput $input): string
+	private function getPhpStanDir(AnalyzerInput $input): string
 	{
 		$phpStanVersion = (string) $input->getPhpStanVersion();
 		$prefix = substr($phpStanVersion, 0, 2);
-		return realpath("{$this->phpStanDir}/{$prefix}/{$phpStanVersion}/bin");
+		$path = sprintf('%s/%s', $prefix, $phpStanVersion);
+		$persistentPath = sprintf('%s/%s', $this->phpStanDir, $path);
+		$cachePath = sprintf('%s/%s', $this->phpStanCacheDir, $path);
+		if (!is_dir($cachePath)) {
+			FileSystem::copy($persistentPath, $cachePath);
+		}
+
+		return realpath($cachePath);
 	}
 
 

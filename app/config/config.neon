@@ -1,6 +1,7 @@
 parameters:
 	phpBin: php
 	phpStanDir: %appDir%/../phpstan
+	phpStanCacheDir: %tempDir%/phpstan-cache
 	localDataDir: %appDir%/../data
 	remoteDataDir: %appDir%/../data
 	downloadsDir: %tempDir%/downloads
@@ -92,9 +93,9 @@ nette.routing:
 
 services:
 	# app model
-	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%/phpstan)
+	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%/phpstan, targetCacheDir: %phpStanCacheDir%)
 	- App\Model\PhpStanVersions(dataPath: %phpStanDir%/versions.json, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
-	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%/phpstan, localDataDir: %localDataDir%, remoteDataDir: %remoteDataDir%)
+	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%/phpstan, phpStanCacheDir: %phpStanCacheDir%, localDataDir: %localDataDir%, remoteDataDir: %remoteDataDir%)
 	- App\Model\CodeSanitizer
 	- App\Model\CodeValidator
 	- App\Model\ConfigValidator(topLevelKeysWhitelist: %config.topLevelKeysWhitelist%, parameterKeysWhitelist: %config.parameterKeysWhitelist%)

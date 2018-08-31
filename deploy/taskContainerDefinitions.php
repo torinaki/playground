@@ -2,6 +2,7 @@
 declare(strict_types = 1);
 
 $phpSettings = require __DIR__ . '/phpSettings.php';
+$mountPoints = require __DIR__ . '/mountPoints.php';
 
 echo json_encode([
 	[
@@ -10,11 +11,6 @@ echo json_encode([
 		'image' => $_SERVER['FPM_DOCKER_TAG'],
 		'environment' => $phpSettings,
 		'entryPoint' => ['php','bin/cli.php'],
-		'mountPoints' => [
-			[
-				'containerPath' => '/usr/deploy/phpstan',
-				'sourceVolume' => 'efs-phpstan',
-			],
-		],
+		'mountPoints' => $mountPoints,
 	],
 ]);

@@ -25,6 +25,7 @@ RUN echo -e \
 	&& mkdir /tmp/opcache \
 		&& mkdir data \
 		&& mkdir temp \
+		&& mkdir temp/phpstan-cache \
 		&& mkdir log \
 		&& mkdir phpstan \
 		&& composer install --prefer-dist --no-progress --no-interaction --no-dev --no-autoloader \

@@ -8,4 +8,10 @@ echo json_encode([
 			'sourcePath' => '/efs/phpstan-data',
 		],
 	],
+	[
+		'name' => 'ebs-phpstan-cache',
+		'host' => [
+			'sourcePath' => '/ebs1/phpstan-cache',
+		],
+	],
 ]);

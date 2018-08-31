@@ -19,12 +19,16 @@ class PhpStanInstaller
 	/** @var string */
 	private $targetDir;
 
+	/** @var string */
+	private $targetCacheDir;
 
-	public function __construct(Github\Api $githubApi, string $tempDir, string $targetDir)
+
+	public function __construct(Github\Api $githubApi, string $tempDir, string $targetDir, string $targetCacheDir)
 	{
 		$this->githubApi = $githubApi;
 		$this->tempDir = $tempDir;
 		$this->targetDir = $targetDir;
+		$this->targetCacheDir = $targetCacheDir;
 	}
 
 
@@ -48,6 +52,11 @@ class PhpStanInstaller
 		if (!is_dir("$targetPath/vendor")) {
 			$this->installDependencies($targetPath);
 		}
+
+		$targetCachePath = sprintf('%s/%s', $this->targetCacheDir, $this->getPath($shaHex));
+		if (!is_dir($targetCachePath)) {
+			FileSystem::copy($targetPath, $targetCachePath);
+		}
 	}
 
 
@@ -59,8 +68,12 @@ class PhpStanInstaller
 
 	private function getTargetPath(GitShaHex $shaHex): string
 	{
-		$prefix = substr((string) $shaHex, 0, 2);
-		return "{$this->targetDir}/{$prefix}/{$shaHex}";
+		return sprintf('%s/%s', $this->targetDir, $this->getPath($shaHex));
+	}
+
+	private function getPath(GitShaHex $shaHex): string
+	{
+		return sprintf('%s/%s', substr((string) $shaHex, 0, 2), (string) $shaHex);
 	}
 
 
