@@ -23,15 +23,12 @@ RUN echo -e \
 	"opcache.file_cache_only=0\n" \
 	"opcache.file_update_protection=0\n" > /usr/local/etc/php/conf.d/10-opcache.ini \
 	&& mkdir /tmp/opcache \
+		&& mkdir data \
 		&& mkdir temp \
 		&& mkdir log \
 		&& composer install --prefer-dist --no-progress --no-interaction --no-dev --no-autoloader \
 		&& composer clear-cache \
 		&& chmod 777 -R /tmp/opcache
-
-COPY ./data/versions.json ./data/versions.json
-
-COPY ./phpstan ./phpstan/
 
 COPY ./app/config/config.env.neon ./app/config/config.local.neon
 

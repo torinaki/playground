@@ -10,6 +10,12 @@ echo json_encode([
 		'image' => $_SERVER['FPM_DOCKER_TAG'],
 		'environment' => $phpSettings,
 		'command' => ['php-fpm'],
+		'mountPoints' => [
+			[
+				'containerPath' => '/usr/deploy/phpstan',
+				'sourceVolume' => 'efs-phpstan',
+			],
+		],
 	],
 	[
 		'name' => 'nginx',

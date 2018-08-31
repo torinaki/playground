@@ -32,13 +32,13 @@ class PhpStanVersions
 	public function __construct(
 		Github\Api $githubApi,
 		PhpStanInstaller $installer,
-		string $dataDir,
+		string $dataPath,
 		array $usersWhitelist,
 		array $versionsBlacklist
 	) {
 		$this->githubApi = $githubApi;
 		$this->installer = $installer;
-		$this->dataPath = "$dataDir/versions.json";
+		$this->dataPath = $dataPath;
 		$this->usersWhitelist = $usersWhitelist;
 		$this->versionsBlacklist = $versionsBlacklist;
 	}

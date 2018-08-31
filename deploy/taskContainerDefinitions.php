@@ -10,5 +10,11 @@ echo json_encode([
 		'image' => $_SERVER['FPM_DOCKER_TAG'],
 		'environment' => $phpSettings,
 		'entryPoint' => ['php','bin/cli.php'],
+		'mountPoints' => [
+			[
+				'containerPath' => '/usr/deploy/phpstan',
+				'sourceVolume' => 'efs-phpstan',
+			],
+		],
 	],
 ]);

@@ -92,9 +92,9 @@ nette.routing:
 
 services:
 	# app model
-	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%)
-	- App\Model\PhpStanVersions(dataDir: %localDataDir%, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
-	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%, localDataDir: %localDataDir%, remoteDataDir: %remoteDataDir%)
+	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%/phpstan)
+	- App\Model\PhpStanVersions(dataPath: %phpStanDir%/versions.json, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
+	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%/phpstan, localDataDir: %localDataDir%, remoteDataDir: %remoteDataDir%)
 	- App\Model\CodeSanitizer
 	- App\Model\CodeValidator
 	- App\Model\ConfigValidator(topLevelKeysWhitelist: %config.topLevelKeysWhitelist%, parameterKeysWhitelist: %config.parameterKeysWhitelist%)
