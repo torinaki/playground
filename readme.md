@@ -1,5 +1,7 @@
 # PHPStan Playground
 
+[![Build Status](https://travis-ci.org/phpstan/playground.svg?branch=master)](https://travis-ci.org/phpstan/playground)
+
 ## How to Install
 
 1. Create empty file `app/config/config.local.neon`
