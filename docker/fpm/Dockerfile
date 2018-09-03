@@ -21,7 +21,7 @@ RUN mkdir data \
 
 COPY ["./composer.json", "./composer.lock", "./"]
 
-RUN composer install --prefer-dist --no-progress --no-interaction --no-dev
+RUN composer install --prefer-dist --no-progress --no-interaction --dev
 
 COPY ./ ./
 
@@ -32,6 +32,8 @@ EXPOSE 9000
 CMD []
 
 FROM development as production
+
+USER root:root
 
 RUN echo -e \
 	"zend_extension=opcache.so\n" \
@@ -47,7 +49,9 @@ RUN echo -e \
 	&& mkdir /tmp/opcache \
 	&& chmod 777 -R /tmp/opcache
 
-RUN composer dump-autoload --optimize --classmap-authoritative --no-dev --no-interaction \
+USER www-data:www-data
+
+RUN composer install --prefer-dist --optimize-autoloader --classmap-authoritative --no-progress --no-interaction --no-dev \
 	&& composer global require jderusse/composer-warmup --prefer-dist --no-progress --no-interaction \
 	&& composer warmup-opcode app \
 	&& composer clear-cache
