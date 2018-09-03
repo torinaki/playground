@@ -14,4 +14,8 @@ return [
 		'name' => 'DEBUG_COOKIE',
 		'value' => $_SERVER['DEBUG_COOKIE'],
 	],
+	[
+		'name' => 'REMOTE_DATA_DIR',
+		'value' => 's3://phpstan-playground/data',
+	],
 ];
