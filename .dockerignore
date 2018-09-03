@@ -1,5 +1,12 @@
 .git
-phpstan
+.env
 data
+deploy
+log
+phpstan
 temp
 vendor
+.travis.yml
+docker-compose.yml
+phpstan.neon
+readme.md

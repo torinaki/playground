@@ -1,4 +1,4 @@
-FROM php:7.2.8-fpm-alpine
+FROM php:7.2.8-fpm-alpine as development
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
@@ -9,7 +9,29 @@ RUN set -xe \
 
 WORKDIR /usr/deploy
 
+RUN chown -R www-data:www-data /usr/deploy
+
+USER www-data:www-data
+
+RUN mkdir data \
+	&& mkdir temp \
+	&& mkdir temp/phpstan-cache \
+	&& mkdir log \
+	&& mkdir phpstan
+
 COPY ["./composer.json", "./composer.lock", "./"]
+
+RUN composer install --prefer-dist --no-progress --no-interaction --no-dev
+
+COPY ./ ./
+
+VOLUME /usr/deploy
+
+EXPOSE 9000
+
+CMD []
+
+FROM development as production
 
 RUN echo -e \
 	"zend_extension=opcache.so\n" \
@@ -23,40 +45,13 @@ RUN echo -e \
 	"opcache.file_cache_only=0\n" \
 	"opcache.file_update_protection=0\n" > /usr/local/etc/php/conf.d/10-opcache.ini \
 	&& mkdir /tmp/opcache \
-		&& mkdir data \
-		&& mkdir temp \
-		&& mkdir temp/phpstan-cache \
-		&& mkdir log \
-		&& mkdir phpstan \
-		&& composer install --prefer-dist --no-progress --no-interaction --no-dev --no-autoloader \
-		&& composer clear-cache \
-		&& chmod 777 -R /tmp/opcache
+	&& chmod 777 -R /tmp/opcache
 
-COPY ./app/config/config.env.neon ./app/config/config.local.neon
-
-COPY ./www ./www/
-
-COPY ./app ./app/
-
-COPY ./bin ./bin/
-
-RUN composer dump-autoload --optimize --no-dev --no-interaction \
+RUN composer dump-autoload --optimize --classmap-authoritative --no-dev --no-interaction \
 	&& composer global require jderusse/composer-warmup --prefer-dist --no-progress --no-interaction \
 	&& composer warmup-opcode app \
-	&& chown -R www-data:www-data /usr/deploy/data \
-	&& chown -R www-data:www-data /usr/deploy/temp \
-	&& chown -R www-data:www-data /usr/deploy/log \
-	&& chown -R www-data:www-data /usr/deploy/phpstan
+	&& composer clear-cache
 
 ARG GIT_COMMIT_HASH
 
 RUN echo $GIT_COMMIT_HASH > .gitcommit
-
-VOLUME /usr/deploy
-
-EXPOSE 9000
-
-USER www-data:www-data
-
-# emptying CMD from the fpm image
-CMD []

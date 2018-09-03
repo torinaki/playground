@@ -1,8 +1,11 @@
-version: "2"
+version: "2.3"
 
 services:
   nginx:
     image: phpstan-playground-nginx
+    build:
+      context: .
+      dockerfile: docker/nginx/Dockerfile
     ports:
       - 8082:80
     links:
@@ -12,11 +15,11 @@ services:
 
   fpm:
     image: phpstan-playground-fpm
+    build:
+      context: .
+      dockerfile: docker/fpm/Dockerfile
+      target: development
     volumes:
       - ./:/usr/deploy
-    environment:
-      - AWS_ACCESS_KEY_ID
-      - AWS_SECRET_ACCESS_KEY
-      - DEVELOPMENT
-      - DEBUG_COOKIE
+    env_file: .env
     command: ["php-fpm"]

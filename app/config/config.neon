@@ -3,12 +3,12 @@ parameters:
 	phpStanDir: %appDir%/../phpstan
 	phpStanCacheDir: %tempDir%/phpstan-cache
 	localDataDir: %appDir%/../data
-	remoteDataDir: %appDir%/../data
+	remoteDataDir: %env.REMOTE_DATA_DIR%
 	downloadsDir: %tempDir%/downloads
 	aws:
 		version: latest
 		region: eu-west-1
-		credentials: Aws\Credentials\Credentials(%awsAccessKey%, %awsSecretKey%)
+		credentials: Aws\Credentials\Credentials(%env.AWS_ACCESS_KEY_ID%, %env.AWS_SECRET_ACCESS_KEY%)
 
 	versions:
 		labelsBlacklist:

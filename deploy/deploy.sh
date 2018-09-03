@@ -18,7 +18,7 @@ export NGINX_DOCKER_TAG=928192134594.dkr.ecr.eu-west-1.amazonaws.com/${NGINX_IMA
 
 echo Building FPM image:
 
-docker build --build-arg GIT_COMMIT_HASH=${GIT_COMMIT_HASH} -t ${FPM_IMAGE_NAME}:${GIT_COMMIT_HASH} -f docker/fpm/Dockerfile .
+docker build --build-arg GIT_COMMIT_HASH=${GIT_COMMIT_HASH} -t ${FPM_IMAGE_NAME}:${GIT_COMMIT_HASH} --target production -f docker/fpm/Dockerfile .
 docker tag ${FPM_IMAGE_NAME}:${GIT_COMMIT_HASH} ${FPM_IMAGE_NAME}:latest
 docker tag ${FPM_IMAGE_NAME}:${GIT_COMMIT_HASH} ${FPM_DOCKER_TAG}
 

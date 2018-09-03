@@ -2,10 +2,7 @@
 	"type": "project",
 	"license": "MIT",
 	"config": {
-		"preferred-install": "dist",
-		"optimize-autoloader": true,
-		"classmap-authoritative": true,
-		"bin-compat": "full"
+		"preferred-install": "dist"
 	},
 	"extra": {
 		"cleaner-ignore": {

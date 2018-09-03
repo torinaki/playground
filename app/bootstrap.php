@@ -32,9 +32,6 @@ return function (array $parameters = []) {
 
 	$configurator->addConfig(__DIR__ . '/config/config.neon');
 	$configurator->addConfig(__DIR__ . '/config/presenters.neon');
-
-	$configurator->addConfig(__DIR__ . '/config/config.local.neon');
-
 	$container = $configurator->createContainer();
 	$container->getByType(\Aws\S3\S3Client::class)->registerStreamWrapper();
 

@@ -2,19 +2,13 @@
 
 [![Build Status](https://travis-ci.org/phpstan/playground.svg?branch=master)](https://travis-ci.org/phpstan/playground)
 
-## How to Install
+## How to run the project locally
 
-1. Create empty file `app/config/config.local.neon`
-2. Make directories `data`, `log`, `phpstan` and `temp` writable.
-3. Run `bin/refresh-versions.php`. The initial run should take couple of minutes.
-
-## How to Run
-
-1. Run `php -S localhost:8111 -t www`
-2. Open : [http://localhost:8111/](http://localhost:8111/)
+1. Install Docker.
+2. Copy `.env.template` to `.env`.
+3. Run `docker-compose up`.
+4. Connect to the FPM container using `docker exec -ti XXX sh` (where XXX is the container ID obtained by `docker ps`).
+5. Run `php bin/cli.php versions:refresh`. Repeat if necessary, it should complete in a couple of minutes.
+6. Access http://localhost:8082 in your browser.
 
 ![screenshot](https://user-images.githubusercontent.com/175109/28476683-2bb8a37a-6e51-11e7-9e24-459467fdfc18.png)
-
-## Troubleshooting
-
-Working on latte template ? You probably need to remove the cache directory : `rm -rf temp/cache/*`
