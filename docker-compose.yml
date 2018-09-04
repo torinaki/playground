@@ -20,6 +20,10 @@ services:
       dockerfile: docker/fpm/Dockerfile
       target: development
     volumes:
-      - ./:/usr/deploy
+      - ./app:/usr/deploy/app
+      - ./bin:/usr/deploy/bin
+      - ./data:/usr/deploy/data
+      - ./phpstan:/usr/deploy/phpstan
+      - ./www:/usr/deploy/www
     env_file: .env
     command: ["php-fpm"]

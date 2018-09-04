@@ -7,7 +7,7 @@
 1. Install Docker.
 2. Copy `.env.template` to `.env`.
 3. Run `docker-compose up`.
-4. Connect to the FPM container using `docker exec -ti XXX sh` (where XXX is the container ID obtained by `docker ps`).
+4. Connect to the FPM container using `docker-compose exec fpm sh`.
 5. Run `php bin/cli.php versions:refresh`. Repeat if necessary, it should complete in a couple of minutes.
 6. Access http://localhost:8082 in your browser.
 
