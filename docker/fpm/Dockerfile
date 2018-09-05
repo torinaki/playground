@@ -19,10 +19,6 @@ RUN mkdir data \
 	&& mkdir log \
 	&& mkdir phpstan
 
-COPY ["./composer.json", "./composer.lock", "./"]
-
-RUN composer install --prefer-dist --no-progress --no-interaction --dev
-
 COPY ./ ./
 
 EXPOSE 9000
