@@ -25,8 +25,6 @@ RUN composer install --prefer-dist --no-progress --no-interaction --dev
 
 COPY ./ ./
 
-VOLUME /usr/deploy
-
 EXPOSE 9000
 
 CMD []
@@ -62,3 +60,5 @@ RUN composer install --prefer-dist --optimize-autoloader --classmap-authoritativ
 ARG GIT_COMMIT_HASH
 
 RUN echo $GIT_COMMIT_HASH > .gitcommit
+
+VOLUME /usr/deploy
