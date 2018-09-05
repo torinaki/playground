@@ -1,5 +1,6 @@
 .git
 .env
+.idea
 data
 deploy
 log
