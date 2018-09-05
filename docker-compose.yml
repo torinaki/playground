@@ -10,8 +10,8 @@ services:
       - 8082:80
     links:
       - fpm
-    volumes_from:
-      - fpm:ro
+    volumes:
+      - source-code:/usr/deploy:ro
 
   fpm:
     image: phpstan-playground-fpm
@@ -20,10 +20,13 @@ services:
       dockerfile: docker/fpm/Dockerfile
       target: development
     volumes:
-      - ./app:/usr/deploy/app
-      - ./bin:/usr/deploy/bin
-      - ./data:/usr/deploy/data
-      - ./phpstan:/usr/deploy/phpstan
-      - ./www:/usr/deploy/www
+      - source-code:/usr/deploy
     env_file: .env
     command: ["php-fpm"]
+
+volumes:
+  source-code:
+    driver_opts:
+      type: none
+      device: $PWD
+      o: bind
