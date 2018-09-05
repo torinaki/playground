@@ -9,15 +9,17 @@ RUN set -xe \
 
 WORKDIR /usr/deploy
 
-RUN chown -R www-data:www-data /usr/deploy
-
-USER www-data:www-data
-
 RUN mkdir data \
+	&& chown -R www-data:www-data data \
 	&& mkdir temp \
 	&& mkdir temp/phpstan-cache \
+	&& chown -R www-data:www-data temp \
 	&& mkdir log \
-	&& mkdir phpstan
+	&& chown -R www-data:www-data log \
+	&& mkdir phpstan \
+	&& chown -R www-data:www-data phpstan \
+	&& mkdir vendor \
+	&& chown -R www-data:www-data vendor
 
 COPY ./ ./
 
@@ -26,8 +28,6 @@ EXPOSE 9000
 CMD []
 
 FROM development as production
-
-USER root:root
 
 RUN echo -e \
 	"zend_extension=opcache.so\n" \
@@ -46,8 +46,6 @@ RUN echo -e \
 RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
 RUN apk --no-cache add shadow && usermod -a -G xfs www-data
 
-USER www-data:www-data
-
 RUN composer install --prefer-dist --optimize-autoloader --classmap-authoritative --no-progress --no-interaction --no-dev \
 	&& composer global require jderusse/composer-warmup --prefer-dist --no-progress --no-interaction \
 	&& composer warmup-opcode app \
@@ -56,5 +54,7 @@ RUN composer install --prefer-dist --optimize-autoloader --classmap-authoritativ
 ARG GIT_COMMIT_HASH
 
 RUN echo $GIT_COMMIT_HASH > .gitcommit
+
+USER www-data
 
 VOLUME /usr/deploy
