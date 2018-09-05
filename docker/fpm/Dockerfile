@@ -49,6 +49,9 @@ RUN echo -e \
 	&& mkdir /tmp/opcache \
 	&& chmod 777 -R /tmp/opcache
 
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
+RUN apk --no-cache add shadow && usermod -a -G xfs www-data
+
 USER www-data:www-data
 
 RUN composer install --prefer-dist --optimize-autoloader --classmap-authoritative --no-progress --no-interaction --no-dev \
