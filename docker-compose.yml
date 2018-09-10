@@ -22,6 +22,8 @@ services:
     volumes:
       - source-code:/usr/deploy
     env_file: .env
+    environment:
+      PHP_IDE_CONFIG: "serverName=Xdebug"
     command: ["php-fpm"]
 
 volumes:
