@@ -124,9 +124,12 @@ class PhpStanInstaller
 		$composer = (new Composer\Factory)->createComposer($io, $composerJsonPath, TRUE, $extractedPath);
 
 		$installer = Composer\Installer::create($io, $composer);
-		$installer->setDumpAutoloader(TRUE);
-		$installer->setRunScripts(FALSE);
-		$installer->setOptimizeAutoloader(TRUE);
+		$installer->setDumpAutoloader(true);
+		$installer->setRunScripts(false);
+		$installer->setOptimizeAutoloader(true);
+		$installer->setClassMapAuthoritative(true);
+		$installer->setPreferDist(true);
+		$installer->setDevMode(false);
 
 		$code = $installer->run();
 		assert($code === 0);
