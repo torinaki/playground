@@ -33,24 +33,11 @@ FROM development as production
 
 USER root
 
-RUN echo -e \
-	"zend_extension=opcache.so\n" \
-	"opcache.enable=1\n" \
-	"opcache.enable_cli=1\n" \
-	"opcache.memory_consumption=128\n" \
-	"opcache.validate_timestamps=0\n" \
-	"opcache.interned_strings_buffer=16\n" \
-	"opcache.max_accelerated_files=10000\n" \
-	"opcache.file_cache='/tmp/opcache'\n" \
-	"opcache.file_cache_only=0\n" \
-	"opcache.file_update_protection=0\n" > /usr/local/etc/php/conf.d/10-opcache.ini \
-	&& mkdir /tmp/opcache \
-	&& chmod 777 -R /tmp/opcache
+COPY [ "./docker/fpm/opcache.ini", "/usr/local/etc/php/conf.d/10-opcache.ini" ]
 
-RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories
-RUN apk --no-cache add shadow && usermod -a -G xfs www-data
-
-RUN composer install --prefer-dist --optimize-autoloader --classmap-authoritative --no-progress --no-interaction --no-dev \
+RUN echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories \
+    && apk --no-cache add shadow && usermod -a -G xfs www-data \
+    && composer install --prefer-dist --optimize-autoloader --classmap-authoritative --no-progress --no-interaction --no-dev \
 	&& composer global require jderusse/composer-warmup --prefer-dist --no-progress --no-interaction \
 	&& composer warmup-opcode app \
 	&& composer clear-cache
