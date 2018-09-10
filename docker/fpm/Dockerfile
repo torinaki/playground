@@ -25,9 +25,13 @@ COPY ./ ./
 
 EXPOSE 9000
 
+USER www-data
+
 CMD []
 
 FROM development as production
+
+USER root
 
 RUN echo -e \
 	"zend_extension=opcache.so\n" \
