@@ -5,6 +5,7 @@ namespace App\System\Logging;
 use Nette\Application\LinkGenerator;
 use Throwable;
 use Tracy\BlueScreen;
+use Tracy\Helpers;
 use Tracy\Logger;
 
 class TracyLogger extends Logger
@@ -57,6 +58,7 @@ class TracyLogger extends Logger
 				$logContext['exceptionUrl'] = $this->linkGenerator->link('Service:log', [
 					'exception' => $basename,
 				]);
+				$logContext['url'] = Helpers::getSource();
 				unlink($exceptionFileName);
 			}
 
