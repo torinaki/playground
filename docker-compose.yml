@@ -10,15 +10,27 @@ services:
       - 8082:80
     links:
       - fpm
+      - fpm_xdebug
     volumes:
       - source-code:/usr/deploy:ro
 
   fpm:
-    image: phpstan-playground-fpm
+    image: phpstan-playground-fpm-dev
     build:
       context: .
       dockerfile: docker/fpm/Dockerfile
       target: development
+    volumes:
+      - source-code:/usr/deploy
+    env_file: .env
+    command: ["php-fpm"]
+
+  fpm_xdebug:
+    image: phpstan-playground-fpm-dev-xdebug
+    build:
+      context: .
+      dockerfile: docker/fpm/Dockerfile
+      target: development-xdebug
     volumes:
       - source-code:/usr/deploy
     env_file: .env

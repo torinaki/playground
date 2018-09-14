@@ -4,16 +4,9 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN set -xe \
 	&& apk --update --no-cache add curl zlib-dev autoconf gcc g++ make \
-	&& pecl install xdebug \
 	&& docker-php-ext-install sockets zip \
-	&& docker-php-ext-enable xdebug \
 	&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
 
-# Xdebug
-ENV XDEBUGINI_PATH=/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-COPY [ "./docker/fpm/xdebug.ini", "/tmp/xdebug.ini" ]
-RUN cat /tmp/xdebug.ini >> $XDEBUGINI_PATH
-RUN echo "xdebug.remote_host="`/sbin/ip route|awk '/default/ { print $3 }'` >> $XDEBUGINI_PATH
 
 WORKDIR /usr/deploy
 
@@ -37,11 +30,27 @@ USER www-data
 
 CMD []
 
-FROM development as production
+###########
+
+FROM development as development-xdebug
 
 USER root
 
-RUN rm $XDEBUGINI_PATH
+RUN pecl install xdebug \
+	&& docker-php-ext-enable xdebug
+
+ENV XDEBUGINI_PATH=/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+COPY [ "./docker/fpm/xdebug.ini", "/tmp/xdebug.ini" ]
+RUN cat /tmp/xdebug.ini >> $XDEBUGINI_PATH
+RUN echo "xdebug.remote_host="`/sbin/ip route|awk '/default/ { print $3 }'` >> $XDEBUGINI_PATH
+
+USER www-data
+
+###########
+
+FROM development as production
+
+USER root
 
 COPY ./docker/fpm/opcache.ini /usr/local/etc/php/conf.d/10-opcache.ini
 
