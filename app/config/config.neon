@@ -4,6 +4,7 @@ parameters:
 	phpStanCacheDir: %tempDir%/phpstan-cache
 	localDataDir: %appDir%/../data
 	remoteDataDir: %env.REMOTE_DATA_DIR%
+	remoteLogDir: %env.REMOTE_LOG_DIR%
 	downloadsDir: %tempDir%/downloads
 	aws:
 		version: latest

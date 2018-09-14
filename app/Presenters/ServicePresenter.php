@@ -3,6 +3,7 @@
 namespace App\Presenters;
 
 use Nette\Application\BadRequestException;
+use Nette\Application\Responses\TextResponse;
 use Nette\Application\UI\Presenter;
 use function phpinfo;
 
@@ -12,10 +13,14 @@ class ServicePresenter extends Presenter
 	/** @var bool */
 	private $devMode;
 
-	public function __construct(bool $devMode)
+	/** @var string */
+	private $remoteLogDirectory;
+
+	public function __construct(bool $devMode, string $remoteLogDirectory)
 	{
 		parent::__construct();
 		$this->devMode = $devMode;
+		$this->remoteLogDirectory = $remoteLogDirectory;
 	}
 
 	protected function startup()
@@ -38,6 +43,15 @@ class ServicePresenter extends Presenter
 
 		require __DIR__ . '/../../vendor/carlosio/opcache-dashboard/opcache.php';
 		$this->terminate();
+	}
+
+	public function actionLog(string $exception)
+	{
+		$contents = @file_get_contents($this->remoteLogDirectory . '/' . $exception);
+		if ($contents === false) {
+			$this->error();
+		}
+		$this->sendResponse(new TextResponse($contents));
 	}
 
 }

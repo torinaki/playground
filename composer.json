@@ -35,7 +35,9 @@
 		"sensiolabs/ansi-to-html": "^1.1",
 		"aws/aws-sdk-php": "^3.66",
 		"carlosio/opcache-dashboard": "^1.0",
-		"symfony/console": "^4.1"
+		"symfony/console": "^4.1",
+		"monolog/monolog": "^1.23",
+		"maxbanton/cwh": "^1.1"
 	},
 	"require-dev": {
 		"phpstan/phpstan-shim": "~0.9",

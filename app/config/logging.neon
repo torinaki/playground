@@ -1,0 +1,25 @@
+services:
+	-
+		class: Aws\CloudWatchLogs\CloudWatchLogsClient
+		arguments:
+			args: %aws%
+
+	-
+		class: App\System\Logging\CloudWatchHandlerFactory
+		arguments:
+			enabled: %cloudWatchEnabled%
+			ecsInstanceId: %ecsInstanceId%
+
+	cloudWatchLogger:
+		class: Monolog\Logger
+		arguments:
+			name: CloudWatch
+			handlers:
+				- @App\System\Logging\CloudWatchHandlerFactory::create()
+
+	tracy.logger:
+		class: App\System\Logging\TracyLogger
+		arguments:
+			localDirectory: %logDirectory%
+			remoteDirectory: %remoteLogDir%
+			errorLogger: @cloudWatchLogger

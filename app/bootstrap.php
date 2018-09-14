@@ -10,13 +10,25 @@ return function (array $parameters = []) {
 	$configurator->setDebugMode($debugMode);
 	Tracy\Debugger::$strictMode = true;
 	Tracy\Debugger::$logSeverity = E_ALL;
-	Tracy\Debugger::enable(!$devMode, __DIR__ . '/../log');
+	$logDirectory = realpath(__DIR__ . '/../log');
+	Tracy\Debugger::enable(!$devMode, $logDirectory);
 	Nette\Bridges\Framework\TracyBridge::initialize();
 	$configurator->setTimeZone('UTC');
 	$configurator->setTempDirectory(__DIR__ . '/../temp');
+	$configurator->addParameters([
+		'logDirectory' => $logDirectory,
+	]);
+
+	if (isset($_ENV['ECS']) && $_ENV['ECS']) {
+		$ecsInstanceId = file_get_contents('http://169.254.169.254/latest/meta-data/instance-id');
+	} else {
+		$ecsInstanceId = 'localhost';
+	}
 	$configurator->addDynamicParameters([
 		'devMode' => $devMode,
 		'env' => $_ENV,
+		'cloudWatchEnabled' => (bool) $_ENV['CLOUDWATCH_ENABLED'],
+		'ecsInstanceId' => $ecsInstanceId,
 	]);
 
 	$configurator->defaultExtensions = [
@@ -32,6 +44,7 @@ return function (array $parameters = []) {
 
 	$configurator->addConfig(__DIR__ . '/config/config.neon');
 	$configurator->addConfig(__DIR__ . '/config/presenters.neon');
+	$configurator->addConfig(__DIR__ . '/config/logging.neon');
 	$container = $configurator->createContainer();
 	$container->getByType(\Aws\S3\S3Client::class)->registerStreamWrapper();
 

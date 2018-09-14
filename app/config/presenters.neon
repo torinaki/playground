@@ -3,3 +3,4 @@ services:
 		class: App\Presenters\ServicePresenter
 		arguments:
 			devMode: %devMode%
+			remoteLogDirectory: %remoteLogDir%

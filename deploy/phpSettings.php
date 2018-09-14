@@ -18,4 +18,16 @@ return [
 		'name' => 'REMOTE_DATA_DIR',
 		'value' => 's3://phpstan-playground/data',
 	],
+	[
+		'name' => 'REMOTE_LOG_DIR',
+		'value' => 's3://phpstan-playground/log',
+	],
+	[
+		'name' => 'CLOUDWATCH_ENABLED',
+		'value' => '1',
+	],
+	[
+		'name' => 'ECS',
+		'value' => '1',
+	],
 ];
