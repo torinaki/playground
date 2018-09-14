@@ -26,7 +26,7 @@ class ServicePresenter extends Presenter
 	protected function startup()
 	{
 		parent::startup();
-		if (!$this->devMode) {
+		if (!$this->devMode && $this->getAction() !== 'generateException') {
 			throw new BadRequestException();
 		}
 	}
@@ -52,6 +52,11 @@ class ServicePresenter extends Presenter
 			$this->error();
 		}
 		$this->sendResponse(new TextResponse($contents));
+	}
+
+	public function actionGenerateException()
+	{
+		throw new \Exception();
 	}
 
 }
