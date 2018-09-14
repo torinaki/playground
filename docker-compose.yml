@@ -36,6 +36,7 @@ services:
     env_file: .env
     environment:
       PHP_IDE_CONFIG: "serverName=Xdebug"
+      XDEBUG_CONFIG: "idekey=phpstorm remote_host=192.168.0.120"
     command: ["php-fpm"]
 
 volumes:
