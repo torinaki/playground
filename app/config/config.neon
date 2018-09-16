@@ -92,6 +92,11 @@ nette.routing:
 		'r/<inputHash>/input': 'Api:showInput'
 		'service/<action>': ['presenter': 'Service']
 
+tracy:
+	bar:
+		- App\System\Tracy\GitCommitPanel
+		- App\System\Tracy\AwsInstanceIdPanel(%ecsInstanceId%)
+
 services:
 	# app model
 	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%/phpstan, targetCacheDir: %phpStanCacheDir%)
