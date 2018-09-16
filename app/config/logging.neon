@@ -10,12 +10,24 @@ services:
 			enabled: %cloudWatchEnabled%
 			ecsInstanceId: %ecsInstanceId%
 
+	-
+		class: Symfony\Component\EventDispatcher\EventDispatcher
+		setup:
+			- addSubscriber(@consoleHandler)
+
 	cloudWatchLogger:
 		class: Monolog\Logger
 		arguments:
 			name: CloudWatch
 			handlers:
 				- @App\System\Logging\CloudWatchHandlerFactory::create()
+				- @consoleHandler
+
+	consoleHandler:
+		class: Symfony\Bridge\Monolog\Handler\ConsoleHandler
+		arguments:
+			verbosityLevelMap:
+				32: 200 # NORMAL: INFO
 
 	tracy.logger:
 		class: App\System\Logging\TracyLogger

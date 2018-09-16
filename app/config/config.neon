@@ -94,7 +94,7 @@ nette.routing:
 
 services:
 	# app model
-	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%/phpstan, targetCacheDir: %phpStanCacheDir%)
+	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, logger: @cloudWatchLogger,targetDir: %phpStanDir%/phpstan, targetCacheDir: %phpStanCacheDir%)
 	- App\Model\PhpStanVersions(dataPath: %phpStanDir%/versions.json, usersWhitelist: %versions.pullRequestOwnersWhitelist%, versionsBlacklist: %versions.labelsBlacklist%)
 	- App\Model\PhpStanAnalyzer(phpBin: %phpBin%, phpStanDir: %phpStanDir%/phpstan, phpStanCacheDir: %phpStanCacheDir%, localDataDir: %localDataDir%, remoteDataDir: %remoteDataDir%)
 	- App\Model\CodeSanitizer
@@ -134,6 +134,7 @@ services:
 		setup:
 			- setCatchExceptions(%productionMode%)
 			- add(@App\Commands\RefreshVersionsCommand)
+			- setDispatcher(@Symfony\Component\EventDispatcher\EventDispatcher)
 	-
 		class: App\Commands\RefreshVersionsCommand
 

@@ -29,7 +29,7 @@ class CloudWatchHandlerFactory
 	public function create(): HandlerInterface
 	{
 		if (!$this->enabled) {
-			return new NullHandler();
+			return new NullHandler(1000);
 		}
 
 		return new CloudWatch(
