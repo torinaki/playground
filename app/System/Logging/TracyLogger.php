@@ -80,7 +80,10 @@ class TracyLogger extends Logger
 			) {
 				continue;
 			}
-			$contents = str_replace($value, sprintf('<%s>', $key), $contents);
+
+			$escapedMask = htmlspecialchars(sprintf('<%s>', $key));
+			$contents = str_replace($value, $escapedMask, $contents);
+			$contents = str_replace(htmlspecialchars($value), $escapedMask, $contents);
 		}
 
 		return $contents;
