@@ -48,6 +48,21 @@ return function (array $parameters = []) {
 	$container = $configurator->createContainer();
 	$container->getByType(\Aws\S3\S3Client::class)->registerStreamWrapper();
 
+	if ($devMode) {
+		$tracyBar = $container->getByType(\Tracy\Bar::class);
+		if (!$debugMode) {
+			$tracyBar->addPanel(
+				$container->getByType(\Nette\Bridges\ApplicationTracy\RoutingPanel::class)
+			);
+		}
+		$tracyBar->addPanel(
+			$container->getByType(\App\System\Tracy\GitCommitPanel::class)
+		);
+		$tracyBar->addPanel(
+			$container->getByType(\App\System\Tracy\AwsInstanceIdPanel::class)
+		);
+	}
+
 	return $container;
 };
 

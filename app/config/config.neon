@@ -92,11 +92,6 @@ nette.routing:
 		'r/<inputHash>/input': 'Api:showInput'
 		'service/<action>': ['presenter': 'Service']
 
-tracy:
-	bar:
-		- App\System\Tracy\GitCommitPanel
-		- App\System\Tracy\AwsInstanceIdPanel(%ecsInstanceId%)
-
 services:
 	# app model
 	- App\Model\PhpStanInstaller(tempDir: %downloadsDir%, targetDir: %phpStanDir%/phpstan, targetCacheDir: %phpStanCacheDir%)
@@ -144,3 +139,14 @@ services:
 		class: App\Commands\RefreshVersionsCommand
 	-
 		class: App\Commands\SleepCommand
+
+	# Debug
+	-
+		class: App\System\Tracy\GitCommitPanel
+
+	-
+		class: App\System\Tracy\AwsInstanceIdPanel
+		arguments:
+			instanceId: %ecsInstanceId%
+	-
+		class: Nette\Bridges\ApplicationTracy\RoutingPanel
