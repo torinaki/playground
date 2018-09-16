@@ -4,6 +4,7 @@ namespace App\Model;
 
 use Composer;
 use Milo\Github;
+use Monolog\Logger;
 use Nette\Utils\FileSystem;
 use Nette\Utils\Json;
 
@@ -22,10 +23,20 @@ class PhpStanInstaller
 	/** @var string */
 	private $targetCacheDir;
 
+	/** @var Logger */
+	private $logger;
 
-	public function __construct(Github\Api $githubApi, string $tempDir, string $targetDir, string $targetCacheDir)
+
+	public function __construct(
+		Github\Api $githubApi,
+		Logger $logger,
+		string $tempDir,
+		string $targetDir,
+		string $targetCacheDir
+	)
 	{
 		$this->githubApi = $githubApi;
+		$this->logger = $logger;
 		$this->tempDir = $tempDir;
 		$this->targetDir = $targetDir;
 		$this->targetCacheDir = $targetCacheDir;
@@ -44,6 +55,7 @@ class PhpStanInstaller
 		$targetPath = $this->getTargetPath($shaHex);
 
 		if (!is_dir($targetPath)) {
+			$this->logger->info(sprintf('Installing %s', (string) $shaHex));
 			$zipPath = $this->getZipPath($shaHex);
 			$this->downloadZipFile($shaHex, $zipPath);
 			$this->extractZipFile($zipPath, $targetPath);
