@@ -1,20 +1,21 @@
 {
-  "name": "phpstan-playground-lambda",
-  "version": "1.0.0",
-  "description": "",
-  "main": "handler.ts",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "MIT",
-  "dependencies": {
-    "aws-sdk": "^2.316.0"
-  },
-  "devDependencies": {
-    "@types/aws-lambda": "^8.10.13",
-    "@types/node": "^10.10.1",
-    "serverless-offline": "^3.25.12",
-    "serverless-plugin-typescript": "^1.1.5"
-  }
+	"name": "phpstan-playground-lambda",
+	"version": "1.0.0",
+	"description": "",
+	"main": "handler.ts",
+	"scripts": {
+		"check": "tslint -p tsconfig.json -c tslint.json"
+	},
+	"author": "",
+	"license": "MIT",
+	"dependencies": {
+		"aws-sdk": "^2.316.0"
+	},
+	"devDependencies": {
+		"@types/aws-lambda": "^8.10.13",
+		"@types/node": "^10.10.1",
+		"serverless-offline": "^3.25.12",
+		"serverless-plugin-typescript": "^1.1.5",
+		"tslint": "^5.11.0"
+	}
 }
