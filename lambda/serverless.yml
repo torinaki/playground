@@ -6,6 +6,16 @@ provider:
   stage: prod
   region: eu-west-1
 
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+
+package:
+  exclude:
+    - node_modules/**/*
+  include:
+    handler.ts
+
 functions:
   ecs-run-task:
     handler: handler.ecsRunTask
