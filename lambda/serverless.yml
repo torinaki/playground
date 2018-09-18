@@ -1,0 +1,21 @@
+service: phpstan-playground # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  stage: prod
+  region: eu-west-1
+
+functions:
+  ecs-run-task:
+    handler: handler.ecsRunTask
+    role: arn:aws:iam::928192134594:role/lambda-phpstan-playground-run-task
+    events:
+    - http:
+        method: post
+        path: /
+        integration: lambda
+        request:
+          template:
+            text/xhtml: '{ "stage" : "$context.stage" }'
+            application/json: '{ "httpMethod" : "$context.httpMethod" }'
