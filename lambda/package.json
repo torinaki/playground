@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "handler.ts",
 	"scripts": {
-		"check": "tslint -p tsconfig.json -c tslint.json"
+		"check": "tsc -p tsconfig.json --outDir .build && tslint -p tsconfig.json -c tslint.json"
 	},
 	"author": "",
 	"license": "MIT",
