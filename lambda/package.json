@@ -10,7 +10,8 @@
 	"author": "",
 	"license": "MIT",
 	"dependencies": {
-		"aws-sdk": "^2.316.0"
+		"aws-sdk": "^2.316.0",
+		"cryptiles": "^4.1.2"
 	},
 	"devDependencies": {
 		"@types/aws-lambda": "^8.10.13",
