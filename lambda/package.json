@@ -5,7 +5,7 @@
 	"main": "handler.ts",
 	"scripts": {
 		"deploy": "serverless deploy",
-		"check": "tsc -p tsconfig.json --outDir .build && tslint -p tsconfig.json -c tslint.json"
+		"check": "tsc -p tsconfig.json --noEmit && tslint -p tsconfig.json -c tslint.json"
 	},
 	"author": "",
 	"license": "MIT",
